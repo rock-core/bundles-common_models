@@ -3,6 +3,10 @@ require 'models/services/control_loop'
 module Rock
     module Services
         describe ControlLoop do
+            after do
+                clear_newly_defined_models
+            end
+
             it "raises if the services are already declared" do
                 type = stub_type '/Mock'
                 ControlLoop.declare_open_loop 'Test', type
