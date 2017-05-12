@@ -40,7 +40,7 @@ module OroGen
 
                 model_with_frames = model.
                     use_frames('test_source' => 'src_frame', 'test_target' => 'tgt_frame').
-                    with_arguments('test_dev' => test_link_dev).
+                    with_arguments(test_dev: test_link_dev).
                     transformer { frames 'src_frame', 'tgt_frame' }
                 task = syskit_stub_deploy_and_configure(model_with_frames)
                 
@@ -65,7 +65,7 @@ module OroGen
 
                 model_with_frames = model.
                     use_frames('test_source' => 'src_frame', 'test_target' => 'tgt_frame').
-                    with_arguments('test_dev' => test_link_dev).
+                    with_arguments(test_dev: test_link_dev).
                     transformer { frames 'src_frame', 'tgt_frame' }
                 task = syskit_stub_deploy_and_configure(model_with_frames)
                 

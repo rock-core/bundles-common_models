@@ -13,7 +13,7 @@ module Rock
 
             describe "defined from a data service" do
                 it "constantly writes data to its output port" do
-                    generator = syskit_stub_deploy_configure_and_start(generator_m.with_arguments('values' => Hash['out' => 10]))
+                    generator = syskit_stub_deploy_configure_and_start(generator_m.with_arguments(values: Hash['out' => 10]))
                     sample = assert_has_one_new_sample(generator.out_port)
                     assert_in_delta sample, 10, 0.01
                 end
@@ -24,7 +24,7 @@ module Rock
 
             it "validates that the keys in 'values' are actual port names" do
                 assert_raises(ArgumentError) do
-                    generator_m.with_arguments('values' => Hash['bla' => 10]).
+                    generator_m.with_arguments(values: Hash['bla' => 10]).
                         instanciate(plan)
                 end
             end
@@ -36,7 +36,7 @@ module Rock
                         Hash['out' => super['out'] * 2]
                     end
                 end
-                task = syskit_stub_deploy_configure_and_start(overload_m.with_arguments('values' => Hash['out' => 10]))
+                task = syskit_stub_deploy_configure_and_start(overload_m.with_arguments(values: Hash['out' => 10]))
                 sample = assert_has_one_new_sample(task.out_port)
                 assert_in_delta sample, 20, 0.01
             end
@@ -44,7 +44,7 @@ module Rock
             describe "the task termination" do
                 attr_reader :task
                 before do
-                    @task = syskit_stub_deploy_configure_and_start(generator_m.with_arguments('values' => Hash['out' => 10]))
+                    @task = syskit_stub_deploy_configure_and_start(generator_m.with_arguments(values: Hash['out' => 10]))
                 end
 
                 it "kills the write thread on exit" do
