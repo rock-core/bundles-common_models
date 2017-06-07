@@ -1,6 +1,6 @@
 require 'common_models/models/devices/sonar/tritech/micron'
 
 class OroGen::SonarTritech::Micron
-    driver_for Rock::Devices::Sonar::Tritech::Micron , as: 'driver' 
+    driver_for CommonModels::Devices::Sonar::Tritech::Micron , as: 'driver' 
 end
 

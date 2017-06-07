@@ -1,6 +1,6 @@
 import_types_from 'canbus'
 
-module Rock
+module CommonModels
     module Devices
         module Bus
             com_bus_type 'CAN', message_type: '/canbus/Message' do

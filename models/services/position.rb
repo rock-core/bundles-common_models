@@ -1,6 +1,6 @@
 import_types_from 'base'
 
-module Rock
+module CommonModels
     module Services
         # Provider of a position, i.e. only of the translation part of a
         # transformation

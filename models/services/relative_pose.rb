@@ -1,7 +1,7 @@
 import_types_from 'base'
 require 'common_models/models/services/pose'
 
-module Rock
+module CommonModels
     module Services
         # Represents pose estimators that provide a pose which is locally
         # consistent, but that will stray away from the true global pose in the long

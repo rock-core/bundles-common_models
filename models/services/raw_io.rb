@@ -1,6 +1,6 @@
 import_types_from 'iodrivers_base'
 
-module Rock
+module CommonModels
     module Services
         data_service_type 'RawIO' do
             input_port 'raw_in', '/iodrivers_base/RawPacket'

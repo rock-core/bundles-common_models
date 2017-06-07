@@ -1,12 +1,12 @@
 require 'models/devices/bus/can'
 
 class OroGen::Canbus::Task
-    driver_for Rock::Devices::Bus::CAN, as: 'driver'
+    driver_for CommonModels::Devices::Bus::CAN, as: 'driver'
 
     # This declares that all devices attached to this bus should use the 'in'
     # port of the component. Otherwise, syskit will assume that a new dynamic
     # input port should be created
-    provides Rock::Devices::Bus::CAN::BusInSrv, as: 'to_bus'
+    provides CommonModels::Devices::Bus::CAN::BusInSrv, as: 'to_bus'
 
     def configure
         super

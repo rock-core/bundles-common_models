@@ -1,7 +1,7 @@
 import_types_from 'base'
 require 'common_models/models/services/pose'
 
-module Rock
+module CommonModels
     module Services
         # Represents estimators that provide a pose that is a best estimate of the
         # global pose of the system. Because it is a best estimate, it can actually

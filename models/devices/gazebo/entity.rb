@@ -1,4 +1,4 @@
-module Rock
+module CommonModels
     module Devices
         module Gazebo
             device_type 'Entity' do

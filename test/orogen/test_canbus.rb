@@ -5,7 +5,7 @@ module OroGen
         describe Task do
             run_simulated do
                 it "fails on configure if a device has no can ID" do
-                    dev = syskit_stub_attached_device(Rock::Devices::Bus::CAN)
+                    dev = syskit_stub_attached_device(CommonModels::Devices::Bus::CAN)
                     dev.period(0.1)
                     dev_task = syskit_deploy(dev)
                     bus_task = dev_task.children.first
@@ -14,7 +14,7 @@ module OroGen
                     end
                 end
                 it "calls the watch operation for each attached device" do
-                    dev = syskit_stub_attached_device(Rock::Devices::Bus::CAN, as: 'dev')
+                    dev = syskit_stub_attached_device(CommonModels::Devices::Bus::CAN, as: 'dev')
                     dev.period(0.1)
                     dev.can_id(0x01, 0x11)
                     dev_task = syskit_deploy(dev)

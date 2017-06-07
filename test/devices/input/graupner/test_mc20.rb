@@ -1,6 +1,6 @@
 require 'models/devices/input/graupner/mc20'
 
-module Rock
+module CommonModels
     module Devices
         module Input
             module Graupner

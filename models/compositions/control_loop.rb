@@ -1,6 +1,6 @@
 require 'common_models/models/services/control_loop'
 
-module Rock
+module CommonModels
     module Compositions
         # Abstract base composition for all control loops
         class ControlLoop < Syskit::Composition

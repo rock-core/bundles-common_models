@@ -1,6 +1,6 @@
 import_types_from 'base'
 require 'common_models/models/services/control_loop'
 
-Rock::Services::ControlLoop.declare \
+CommonModels::Services::ControlLoop.declare \
     'Joints', '/base/commands/Joints', '/base/samples/Joints'
 

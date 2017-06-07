@@ -1,6 +1,6 @@
 import_types_from 'base'
 
-module Rock
+module CommonModels
     module Services
         # Provider of a frame transformation
         data_service_type 'Transformation' do

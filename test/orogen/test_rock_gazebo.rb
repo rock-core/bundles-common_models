@@ -35,7 +35,7 @@ module OroGen
                 model.require_dynamic_service 'link_export', as: "test",
                     port_name: 'src2tgt'
                 robot_model = Syskit::Robot::RobotDefinition.new
-                test_link_dev = robot_model.device Rock::Devices::Gazebo::Link, as: 'test', using: model
+                test_link_dev = robot_model.device CommonModels::Devices::Gazebo::Link, as: 'test', using: model
                 test_link_dev.period(0.5)
 
                 model_with_frames = model.
@@ -61,7 +61,7 @@ module OroGen
                 model.require_dynamic_service 'link_export', as: "test",
                     port_name: 'src2tgt'
                 robot_model = Syskit::Robot::RobotDefinition.new
-                test_link_dev = robot_model.device Rock::Devices::Gazebo::Link, as: 'test', using: model
+                test_link_dev = robot_model.device CommonModels::Devices::Gazebo::Link, as: 'test', using: model
 
                 model_with_frames = model.
                     use_frames('test_source' => 'src_frame', 'test_target' => 'tgt_frame').

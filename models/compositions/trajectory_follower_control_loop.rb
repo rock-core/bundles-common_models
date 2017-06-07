@@ -3,7 +3,7 @@ require 'common_models/models/services/pose'
 require 'common_models/models/services/trajectory_execution'
 using_task_library 'trajectory_follower'
 
-module Rock
+module CommonModels
     module Compositions
         ControlLoop.specialize \
             ControlLoop.controller_child => OroGen::TrajectoryFollower::Task,

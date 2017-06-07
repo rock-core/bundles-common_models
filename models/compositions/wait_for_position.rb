@@ -1,6 +1,6 @@
 require 'common_models/models/services/position'
 
-module Rock
+module CommonModels
     module Compositions
         # Composition that waits for a given position stream's precision to be
         # below a given tolerance
@@ -14,7 +14,7 @@ module Rock
             argument :tolerance
 
             # The position stream
-            add Rock::Services::Position, as: 'position'
+            add CommonModels::Services::Position, as: 'position'
 
             # Tests whether the cov_position of a rbs is acceptable w.r.t. {#tolerance}
             #

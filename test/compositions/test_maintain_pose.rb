@@ -1,7 +1,7 @@
 require 'models/compositions/maintain_pose'
 require 'timecop'
 
-module Rock
+module CommonModels
     module Compositions
         describe MaintainPose do
             attr_reader :pose, :rbs, :maintain_pose
@@ -72,9 +72,8 @@ module Rock
                 syskit_configure_and_start(maintain_pose)
                 maintain_pose.pose_child.orocos_task.pose_samples.write(rbs)
                 flexmock(maintain_pose).should_receive(:within_tolerance?).and_return(false)
-                plan.unmark_mission_task(maintain_pose)
 
-                event = assert_event_emission(maintain_pose.exceeds_tolerance_event, garbage_collect_pass: false)
+                event = expect_execution.to { emit maintain_pose.exceeds_tolerance_event }
                 assert_pose_in_event_equal pose, event.context.first[:expected]
                 assert_pose_in_event_equal rbs, event.context.first[:actual]
             end

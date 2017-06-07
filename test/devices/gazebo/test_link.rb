@@ -1,6 +1,6 @@
 require 'models/devices/gazebo/link'
 
-module Rock
+module CommonModels
     module Devices
         module Gazebo
             describe Link do

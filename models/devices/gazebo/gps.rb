@@ -1,7 +1,7 @@
 require 'common_models/models/devices/gazebo/entity'
 require 'common_models/models/services/position'
 
-module Rock
+module CommonModels
     module Devices
         module Gazebo
             device_type 'GPS' do

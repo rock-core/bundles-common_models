@@ -1,5 +1,5 @@
 require 'models/compositions/constant_generator'
-module Rock
+module CommonModels
     module Compositions
         describe ConstantGenerator do
             attr_reader :srv_m, :generator_m

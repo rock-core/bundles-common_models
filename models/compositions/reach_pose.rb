@@ -1,6 +1,6 @@
 require 'common_models/models/compositions/pose_predicate'
 
-module Rock
+module CommonModels
     module Compositions
         # Composition that verifies whether a certain pose is reached within a
         # given timeout

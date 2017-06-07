@@ -1,6 +1,6 @@
 import_types_from 'base'
 
-module Rock
+module CommonModels
     module Services
         # Provider of a full velocity
         data_service_type 'Velocity' do

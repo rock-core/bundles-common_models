@@ -1,6 +1,6 @@
 require 'models/devices/gps/mb500'
 
-module Rock
+module CommonModels
     module Devices
         module GPS
             describe MB500 do

@@ -15,9 +15,9 @@ class OroGen::RockGazebo::WorldTask
     # end
 end
 
-# Handling of a gazebo model on the Rock side
+# Handling of a gazebo model on the CommonModels side
 #
-# ModelTasks are {Rock::Services::JointsControlledSystem}, that is they report
+# ModelTasks are {CommonModels::Services::JointsControlledSystem}, that is they report
 # the state of their joints, and accept joint commands
 #
 # They also can export transformations between two arbitrary links. This is
@@ -42,12 +42,12 @@ end
 # Note that in most cases you won't have to access this interface directly, the
 # rock_gazebo plugin does it for you through a high-level API on the profiles.
 class OroGen::RockGazebo::ModelTask
-    driver_for Rock::Devices::Gazebo::Model, as: 'model'
+    driver_for CommonModels::Devices::Gazebo::Model, as: 'model'
 
     # Declare a dynamic service for the link export feature
     #
     # One uses it by first require'ing
-    dynamic_service Rock::Devices::Gazebo::Link, as: 'link_export' do
+    dynamic_service CommonModels::Devices::Gazebo::Link, as: 'link_export' do
         name      = self.name
         port_name = options.fetch(:port_name, name)
         frame_basename = options.fetch(:frame_basename, name)
@@ -56,7 +56,7 @@ class OroGen::RockGazebo::ModelTask
         options[:cov_orientation] ||= Types.base.Matrix3d.new(data: nans.dup)
         options[:cov_velocity]    ||= Types.base.Matrix3d.new(data: nans.dup)
 
-        driver_for Rock::Devices::Gazebo::Link, "link_state_samples" => port_name
+        driver_for CommonModels::Devices::Gazebo::Link, "link_state_samples" => port_name
         component_model.transformer do
             transform_output port_name, "#{frame_basename}_source" => "#{frame_basename}_target"
         end
@@ -115,7 +115,7 @@ class OroGen::RockGazebo::ModelTask
 end
 
 class OroGen::RockGazebo::LaserScanTask
-    driver_for Rock::Devices::Gazebo::Ray, as: 'sensor'
+    driver_for CommonModels::Devices::Gazebo::Ray, as: 'sensor'
 
     transformer do
         frames 'sensor'
@@ -129,7 +129,7 @@ class OroGen::RockGazebo::LaserScanTask
 end
 
 class OroGen::RockGazebo::ImuTask
-    driver_for Rock::Devices::Gazebo::Imu, as: 'sensor'
+    driver_for CommonModels::Devices::Gazebo::Imu, as: 'sensor'
 
     transformer do
         frames 'sensor', 'inertial'
@@ -144,7 +144,7 @@ class OroGen::RockGazebo::ImuTask
 end
 
 class OroGen::RockGazebo::CameraTask
-    driver_for Rock::Devices::Gazebo::Camera, as: 'sensor'
+    driver_for CommonModels::Devices::Gazebo::Camera, as: 'sensor'
 
     transformer do
         frames 'sensor'
@@ -158,7 +158,7 @@ class OroGen::RockGazebo::CameraTask
 end
 
 class OroGen::RockGazebo::GPSTask
-    driver_for Rock::Devices::Gazebo::GPS, as: 'gps'
+    driver_for CommonModels::Devices::Gazebo::GPS, as: 'gps'
 
     transformer do
         frames 'gps', 'nwu', 'utm'

@@ -1,6 +1,6 @@
 import_types_from 'iodrivers_base'
 
-module Rock
+module CommonModels
     module Devices
         module Bus
             # Base model for busses that are using iodrivers_base RawPacket for

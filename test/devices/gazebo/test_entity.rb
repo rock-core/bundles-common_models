@@ -1,6 +1,6 @@
 require 'models/devices/gazebo/entity'
 
-module Rock
+module CommonModels
     module Devices
         module Gazebo
             describe Entity do

@@ -1,6 +1,6 @@
 import_types_from 'base'
 
-module Rock
+module CommonModels
     module Services
         # A provider for laser ranges
         data_service_type 'LaserScan' do

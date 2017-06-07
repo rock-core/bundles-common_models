@@ -1,6 +1,6 @@
 require 'models/compositions/pose_predicate'
 
-module Rock
+module CommonModels
     module Compositions
         describe PosePredicate do
             describe "#within_tolerance?" do

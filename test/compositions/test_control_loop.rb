@@ -1,6 +1,6 @@
 require 'models/compositions/control_loop'
 
-module Rock
+module CommonModels
     module Compositions
         describe ControlLoop do
             after do

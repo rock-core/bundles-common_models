@@ -1,6 +1,6 @@
 require 'models/devices/gazebo/ray'
 
-module Rock
+module CommonModels
     module Devices
         module Gazebo
             describe Ray do

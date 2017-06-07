@@ -1,6 +1,6 @@
 import_types_from 'base'
 
-module Rock
+module CommonModels
     module Services
         # Provider of only the Z (altitude/depth) part of a position
         #

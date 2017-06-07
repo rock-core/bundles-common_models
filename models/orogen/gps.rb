@@ -12,9 +12,9 @@ class OroGen::Gps::BaseTask
 end
 
 class OroGen::Gps::MB500Task
-    driver_for Rock::Devices::GPS::MB500, as: 'driver'
+    driver_for CommonModels::Devices::GPS::MB500, as: 'driver'
 end
 
 class OroGen::Gps::GPSDTask
-    driver_for Rock::Devices::GPS::Generic, as: 'driver'
+    driver_for CommonModels::Devices::GPS::Generic, as: 'driver'
 end

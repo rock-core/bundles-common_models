@@ -1,6 +1,6 @@
 import_types_from 'base'
 
-module Rock
+module CommonModels
     module Services
         data_service_type 'Rotation' do
             output_port 'rotation_samples', '/base/samples/RigidBodyState'

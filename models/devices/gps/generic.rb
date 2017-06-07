@@ -1,6 +1,6 @@
 require 'models/services/position'
 
-module Rock
+module CommonModels
     module Devices
         module GPS
             device_type 'Generic' do

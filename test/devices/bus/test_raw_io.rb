@@ -1,6 +1,6 @@
 require 'models/devices/bus/raw_io'
 
-module Rock
+module CommonModels
     module Devices
         module Bus
             describe RawIO do

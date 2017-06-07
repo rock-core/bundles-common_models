@@ -1,6 +1,6 @@
 require 'models/compositions/wait_for_position'
 
-module Rock
+module CommonModels
     module Compositions
         describe WaitForPosition do
             describe "#acceptable?" do

@@ -1,6 +1,6 @@
 require 'models/devices/gps/generic'
 
-module Rock
+module CommonModels
     module Devices
         module GPS
             describe Generic do

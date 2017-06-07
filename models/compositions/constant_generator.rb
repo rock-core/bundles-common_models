@@ -1,5 +1,5 @@
 
-module Rock
+module CommonModels
     module Compositions
         # Generic implementation of components that generate constant values on
         # their ports

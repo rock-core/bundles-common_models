@@ -1,4 +1,4 @@
 require 'common_models/models/services/joints_control_loop'
 require 'common_models/models/compositions/control_loop'
-Rock::Compositions::ControlLoop.declare 'Joints'
+CommonModels::Compositions::ControlLoop.declare 'Joints'
 

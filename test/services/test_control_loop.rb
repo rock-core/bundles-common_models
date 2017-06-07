@@ -1,6 +1,6 @@
 require 'models/services/control_loop'
 
-module Rock
+module CommonModels
     module Services
         describe ControlLoop do
             after do

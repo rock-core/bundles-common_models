@@ -1,6 +1,6 @@
 import_types_from 'base'
 
-module Rock
+module CommonModels
     module Services
         # Provider of an orientation, i.e. only of the rotation part of a
         # transformation

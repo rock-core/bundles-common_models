@@ -1,7 +1,7 @@
 require 'base/float'
 require 'common_models/models/services/pose'
 
-module Rock
+module CommonModels
     module Compositions
         # Base implementation for other compositions that handle pose-related
         # predicates
@@ -21,7 +21,7 @@ module Rock
             argument :orientation_tolerance
 
             # The pose source
-            add Rock::Services::Pose, as: 'pose'
+            add CommonModels::Services::Pose, as: 'pose'
             
             # The last received pose as a Types.base.samples.RigidBodyState
             # object

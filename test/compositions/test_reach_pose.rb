@@ -1,7 +1,7 @@
 require 'models/compositions/reach_pose'
 require 'timecop'
 
-module Rock
+module CommonModels
     module Compositions
         describe ReachPose do
             attr_reader :pose, :rbs, :reach_pose
