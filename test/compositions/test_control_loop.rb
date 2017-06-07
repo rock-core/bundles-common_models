@@ -3,6 +3,10 @@ require 'models/compositions/control_loop'
 module Rock
     module Compositions
         describe ControlLoop do
+            after do
+                clear_newly_defined_models
+            end
+
             describe "open loop" do
                 attr_reader :command_type, :controller_srv, :controlled_system_srv, :model
                 before do
