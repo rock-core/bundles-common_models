@@ -1,0 +1,6 @@
+--plugin utilrb
+--plugin metaruby
+--plugin roby
+--plugin syskit
+--output-dir doc/_site/api
+--embed-mixins
