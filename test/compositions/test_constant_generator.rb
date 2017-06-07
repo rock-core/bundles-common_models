@@ -14,7 +14,7 @@ module CommonModels
             describe "defined from a data service" do
                 it "constantly writes data to its output port" do
                     generator = syskit_stub_deploy_configure_and_start(generator_m.with_arguments(values: Hash['out' => 10]))
-                    sample = assert_has_one_new_sample(generator.out_port)
+                    sample = expect_execution.to { have_one_new_sample generator.out_port }
                     assert_in_delta sample, 10, 0.01
                 end
                 it "returns the same component over and over again" do
@@ -37,7 +37,7 @@ module CommonModels
                     end
                 end
                 task = syskit_stub_deploy_configure_and_start(overload_m.with_arguments(values: Hash['out' => 10]))
-                sample = assert_has_one_new_sample(task.out_port)
+                sample = expect_execution.to { have_one_new_sample task.out_port }
                 assert_in_delta sample, 20, 0.01
             end
 
@@ -48,22 +48,19 @@ module CommonModels
                 end
 
                 it "kills the write thread on exit" do
-                    plan.unmark_mission_task(@task)
                     reader = task.orocos_task.out.reader
-                    task.stop!
-                    task.stop_event.on { |_| reader.clear }
-                    assert_event_emission task.interrupt_event
+                    expect_execution do
+                        task.stop!
+                        task.stop_event.on { |_| reader.clear }
+                    end.to { emit task.interrupt_event }
                     refute task.aborted_event.emitted?
                     refute reader.read_new
                 end
 
                 it "aborts if the write thread raises an exception" do
                     plan.add_mission_task(task.execution_agent)
-                    assert_fatal_exception(Roby::MissionFailedError, failure_point: task.aborted_event, tasks: [task]) do
-                        task.write_thread.raise Interrupt
-                        assert_event_emission task.aborted_event
-                    end
-                    assert task.aborted_event.emitted?
+                    expect_execution { task.write_thread.raise Interrupt }.
+                        to { emit task.aborted_event }
                     # Verify that the task got stopped properly regardless of
                     # the abort
                     assert_equal :STOPPED, task.orocos_task.rtt_state

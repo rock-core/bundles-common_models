@@ -136,8 +136,7 @@ module CommonModels
                 rbs.cov_position.data = [1, 0, 0, 0, 4, 0, 0, 0, 9]
                 task.position_child.orocos_task.position_samples.write(rbs)
                 flexmock(task).should_receive(:acceptable?).once.with(rbs.cov_position.data).pass_thru
-                process_events
-                refute task.success?
+                expect_execution.to { have_running task }
             end
 
             it "emits success if acceptable? returns true" do
@@ -146,8 +145,7 @@ module CommonModels
                 rbs.cov_position.data = [1, 0, 0, 0, 4, 0, 0, 0, 9]
                 task.position_child.orocos_task.position_samples.write(rbs)
                 flexmock(task).should_receive(:acceptable?).once.with(rbs.cov_position.data).pass_thru
-                process_events
-                assert task.success?
+                expect_execution.to { emit task.success_event }
             end
         end
     end

@@ -15,7 +15,7 @@ module CommonModels
             script do
                 pose_r = pose_child.pose_samples_port.reader
 
-                poll_until(success_event) do
+                poll do
                     if duration && (lifetime > duration)
                         if last_pose
                             success_event.emit

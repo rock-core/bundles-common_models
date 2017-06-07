@@ -19,9 +19,8 @@ module CommonModels
             end
 
             def assert_times_out
-                plan.unmark_mission_task reach_pose
                 Timecop.travel(10) do
-                    assert_event_emission(reach_pose.timed_out_event, garbage_collect_pass: false)
+                    expect_execution.to { emit reach_pose.timed_out_event }
                 end
             end
 
@@ -40,7 +39,7 @@ module CommonModels
                 reach_pose.pose_child.orocos_task.pose_samples.
                     write(sample = Types.base.samples.RigidBodyState.new)
                 flexmock(reach_pose).should_receive(:within_tolerance?).and_return(true)
-                event = assert_event_emission reach_pose.success_event
+                event = expect_execution.to { emit reach_pose.success_event }
 
                 sample_as_pose = Types.base.Pose.new(position: sample.position, orientation: sample.orientation)
                 assert_equal [sample_as_pose], event.context
@@ -74,8 +73,7 @@ module CommonModels
                 reach_pose.orientation_tolerance = Eigen::Vector3.new
                 syskit_configure_and_start(reach_pose)
                 flexmock(reach_pose).should_receive(:within_tolerance?).never
-                process_events
-                assert reach_pose.running?
+                expect_execution.to { have_running reach_pose }
             end
 
             it "does nothing if no pose samples arrive within the tolerance" do
@@ -85,8 +83,7 @@ module CommonModels
                 reach_pose.pose_child.orocos_task.pose_samples.
                     write(Types.base.samples.RigidBodyState.new)
                 flexmock(reach_pose).should_receive(:within_tolerance?).once.and_return(false)
-                process_events
-                assert reach_pose.running?
+                expect_execution.to { have_running reach_pose }
             end
 
             it "emits success if the pose and timeout are reached at the same time" do
@@ -98,9 +95,8 @@ module CommonModels
                 flexmock(reach_pose).should_receive(:within_tolerance?).and_return(true)
 
                 Timecop.travel(10) do
-                    assert_event_emission reach_pose.success_event
+                    expect_execution.to { emit reach_pose.success_event }
                 end
-                assert !reach_pose.failed_event.emitted?
             end
         end
     end

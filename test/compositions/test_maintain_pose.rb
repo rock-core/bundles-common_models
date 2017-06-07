@@ -15,7 +15,7 @@ module CommonModels
                 rbs.orientation = Eigen::Quaternion.Identity
 
                 @maintain_pose = syskit_stub_and_deploy(
-                    MaintainPose.with_arguments(pose: pose, duration: 10))
+                    MaintainPose.with_arguments(pose: pose, duration: 1))
             end
 
             def assert_pose_in_event_equal(rbs, actual)
@@ -26,31 +26,32 @@ module CommonModels
                 end
             end
 
-
-            it "terminates successfully if the target pose is maintained within the expected duration" do
-                maintain_pose.position_tolerance = Eigen::Vector3.new
-                maintain_pose.orientation_tolerance = Eigen::Vector3.new
-                syskit_configure_and_start(maintain_pose)
-                flexmock(maintain_pose).should_receive(:within_tolerance?).and_return(true)
-                sample = nil
-                Timecop.freeze do
-                    10.times do
-                        Timecop.travel(1)
-                        maintain_pose.pose_child.orocos_task.pose_samples.
-                            write(sample = Types.base.samples.RigidBodyState.new)
-                        process_events
-                    end
+            describe "with a non-nil duration argument" do
+                before do
+                    maintain_pose.position_tolerance = Eigen::Vector3.new
+                    maintain_pose.orientation_tolerance = Eigen::Vector3.new
+                    Timecop.freeze(@base_time = Time.now)
+                    syskit_configure_and_start(maintain_pose)
                 end
-                assert_event_emission maintain_pose.success_event
-            end
 
-            it "fails at the end of the period if no samples were ever received" do
-                maintain_pose.position_tolerance = Eigen::Vector3.new
-                maintain_pose.orientation_tolerance = Eigen::Vector3.new
-                syskit_configure_and_start(maintain_pose)
-                plan.unmark_mission_task(maintain_pose)
-                Timecop.travel(10) do
-                    assert_event_emission(maintain_pose.no_samples_event, garbage_collect_pass: false)
+                it "does nothing if the end of the duration has not been reached" do
+                    Timecop.freeze(@base_time + 0.9)
+                    expect_execution.to { not_emit maintain_pose.success_event }
+                end
+
+                it "terminates successfully if the target pose is maintained within the expected duration" do
+                    flexmock(maintain_pose).should_receive(:within_tolerance?).and_return(true)
+                    maintain_pose.pose_child.orocos_task.pose_samples.
+                        write(sample = Types.base.samples.RigidBodyState.new)
+                    # Read the sample
+                    expect_execution.to { not_emit maintain_pose.success_event }
+                    Timecop.freeze(@base_time + 1.01)
+                    expect_execution.to { emit maintain_pose.success_event }
+                end
+
+                it "fails at the end of the period if no samples were ever received" do
+                    Timecop.freeze(@base_time + 1.01)
+                    expect_execution.to { emit maintain_pose.no_samples_event }
                 end
             end
 
@@ -59,11 +60,10 @@ module CommonModels
                     MaintainPose.with_arguments(pose: pose, duration: nil))
                 maintain_pose.position_tolerance = Eigen::Vector3.new
                 maintain_pose.orientation_tolerance = Eigen::Vector3.new
+                Timecop.freeze(base_time = Time.now)
                 syskit_configure_and_start(maintain_pose)
-                Timecop.travel(10) do
-                    process_events
-                    assert maintain_pose.running?
-                end
+                Timecop.freeze(base_time + 2)
+                expect_execution.to { have_running maintain_pose }
             end
 
             it "fails if a sample outside tolerance is received" do
