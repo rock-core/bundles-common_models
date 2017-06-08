@@ -44,29 +44,6 @@ module CommonModels
                 end
             end
 
-            # add_specialization_constraint do |spec0, spec1|
-            #     controller0 = spec0.find_specialization(
-            #         'controller', Services::ControlledSystem)
-            #     controller1 = spec1.find_specialization(
-            #         'controller', Services::ControlledSystem)
-            #     if controller0 && controller1
-            #         m0 = controller0.first
-            #         m1 = controller1.first
-            #         puts "#{m0} #{m1}"
-            #         if m0.respond_to?(:open_loop_srv) && (m0.open_loop_srv == m1)
-            #             puts "FALSE"
-            #             false
-            #         elsif m1.respond_to?(:open_loop_srv) && (m1.open_loop_srv == m0)
-            #             puts "FALSE"
-            #             false
-            #         else
-            #             puts "FALSE"
-            #             true
-            #         end
-            #     else true
-            #     end
-            # end
-
             def self.declare_open_loop(name)
                 controller_srv =
                     Services::ControlLoop.open_loop_controller_for(name)
