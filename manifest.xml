@@ -8,5 +8,8 @@
     <license>LGPL v2 or later</license>
 
     <depend package="drivers/orogen/transformer" />
+
+    <test_depend package="minitest" />
+    <test_depend package="flexmock" />
 </package>
 
