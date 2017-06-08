@@ -4,6 +4,8 @@ require "common_models/models/services/controlled_system.rb"
 module CommonModels
     module Services
         module ControlLoop
+            # Exception raised by {.declare_open_loop} and {.declare} if a
+            # control loop of the requested name has already been defined
             class AlreadyDeclared < ArgumentError; end
 
             # @api private
