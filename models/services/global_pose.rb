@@ -1,5 +1,6 @@
 import_types_from 'base'
 require 'common_models/models/services/pose'
+require 'common_models/models/services/global_position'
 
 module CommonModels
     module Services
@@ -10,8 +11,8 @@ module CommonModels
         # It is typically a pose estimator which fuses a global position measurement
         # such as GPS
         data_service_type 'GlobalPose' do
-            provides GlobalPosition
             provides Pose
+            provides GlobalPosition, 'position_samples' => 'pose_samples'
         end
     end
 end

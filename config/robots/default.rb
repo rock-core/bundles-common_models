@@ -17,15 +17,39 @@ Robot.init do
     # Roby.app.search_path << "separate path"
 end
 
+def require_all_except(*path, except: [])
+    Dir.glob File.join(*path, '*') do |file|
+        if File.exist?(file) && File.extname(file) == '.rb'
+            if !except.include?(File.basename(file))
+                require file
+            end
+        end
+    end
+end
+
 # Block evaluated to load the models this robot requires
 Robot.requires do
-    require 'models/services/pose'
-    require 'models/compositions/constant_generator'
-    require 'models/compositions/joints_control_loop'
-    require 'models/compositions/maintain_pose'
-    require 'models/compositions/reach_pose'
-    require 'models/compositions/pose_predicate'
-    require 'models/compositions/control_loop'
+    Roby.app.auto_load_all_task_libraries = true
+
+    excluded_services      = []
+    excluded_compositions = []
+
+    if !Roby.app.default_loader.has_typekit?('controldev')
+        excluded_services << 'raw_input_command.rb'
+    end
+
+    if !Roby.app.default_loader.has_typekit?('iodrivers_base')
+        excluded_services << 'raw_io.rb'
+    end
+
+    if !Roby.app.default_loader.has_project?('trajectory_follower')
+        excluded_compositions << 'trajectory_follower_control_loop.rb'
+    end
+
+    # Load all in services/ and compositions/ except those things that have a
+    # dependency
+    require_all_except Roby.app.app_dir, 'models', 'services', except: excluded_services
+    require_all_except Roby.app.app_dir, 'models', 'compositions', except: excluded_compositions
 end
 
 # Block evaluated to configure the system, that is set up values in Roby's Conf
