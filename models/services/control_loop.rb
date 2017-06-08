@@ -6,7 +6,9 @@ module CommonModels
         module ControlLoop
             class AlreadyDeclared < ArgumentError; end
 
-            # Helper method for {declare_open_loop} and {declare}
+            # @api private
+            #
+            # Helper method for {.declare_open_loop} and {.declare}
             #
             # @raise [AlreadyDeclared]
             def self.check_already_declared(name, *suffixes)
@@ -20,14 +22,14 @@ module CommonModels
 
             # Declares standard services, parts of open-loop control systems.
             # The following services are defined, each time prefixed with
-            # ${name}
+            # the provided name
             #
             # OpenLoopController::
             #   open-loop controller, that is a component that generates a
-            #   command of type {control_type} on a command_out port.
+            #   command of type control_type on a command_out port.
             # OpenLoopControlledSystem::
             #   system controlled in open-loop, that is a component that
-            #   expects a command of type {control_type} on a command_in port.
+            #   expects a command of type control_type on a command_in port.
             #
             # @param [String] name the name that should be used to prefix the
             #   generated services
@@ -59,18 +61,18 @@ module CommonModels
             # Declares standard services, parts of closed-loop control systems.
             #
             # It defines first the open-loop services by calling
-            # {declare_open_loop}. In addition, it defines the following
-            # services, each time prefixed with ${name}
+            # {.declare_open_loop}. In addition, it defines the following
+            # services, each time prefixed with the provided name
             #
             # Controller::
             #   closed-loop controller, that is a component that generates a
-            #   command of type {control_type} on a command_out port and expects
-            #   system feedback on a status_in port of type {feedback_type}
+            #   command of type control_type on a command_out port and expects
+            #   system feedback on a status_in port of type feedback_type
             # ControlledSystem::
             #   system controlled in closed loop, that is a component that
-            #   generates a status of type {feedback_type} on a status_out port
+            #   generates a status of type feedback_type on a status_out port
             #   and expects commands on a command_in port of type
-            #   {control_type}
+            #   control_type
             # Status::
             #   component that generates the required status information for
             #   the generated controller

@@ -11,3 +11,5 @@ data/cmae_data
 coverage/
 logs/
 models/pack
+doc/
+.yardoc/

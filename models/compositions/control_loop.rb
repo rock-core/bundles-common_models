@@ -90,7 +90,7 @@ module CommonModels
             # {Services::ControlLoop.declare}. The name provided as argument has
             # to match the one given to the service declaration method
             #
-            # @param [String] the controller name
+            # @param [String] name the controller name
             # @return [void]
             def self.declare(name)
                 declare_open_loop(name)
