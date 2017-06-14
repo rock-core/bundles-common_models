@@ -106,7 +106,8 @@ module CommonModels
             # @return [Model<ConstantGenerator>]
             def self.for_type(type_name)
                 generator = ConstantGenerator.new_submodel
-                generator.output_port 'out', type_name
+                port = generator.output_port 'out', type_name
+                port.doc "The generated value, from the values argument to the task. Set it to a hash with a single out key and the value to generate."
                 generator
             end
 
