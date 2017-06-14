@@ -9,6 +9,7 @@
 
     <depend package="drivers/orogen/transformer" />
 
+    <depend package="tools/syskit" />
     <test_depend package="minitest" />
     <test_depend package="flexmock" />
 </package>
