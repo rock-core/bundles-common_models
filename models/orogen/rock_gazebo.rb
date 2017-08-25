@@ -44,11 +44,10 @@ end
 class OroGen::RockGazebo::ModelTask
     driver_for CommonModels::Devices::Gazebo::Model, as: 'model'
 
-    # Declare a dynamic service for the link export feature
+    # @api private
     #
-    # One uses it by first require'ing
-    dynamic_service CommonModels::Devices::Gazebo::Link, as: 'link_export' do
-        name      = self.name
+    # Common implementation of the two dynamic services (Link and Model)
+    def self.common_dynamic_link_export(context, name, options)
         port_name = options.fetch(:port_name, name)
         frame_basename = options.fetch(:frame_basename, name)
         nans = [Float::NAN] * 9
@@ -56,9 +55,31 @@ class OroGen::RockGazebo::ModelTask
         options[:cov_orientation] ||= Types.base.Matrix3d.new(data: nans.dup)
         options[:cov_velocity]    ||= Types.base.Matrix3d.new(data: nans.dup)
 
-        driver_for CommonModels::Devices::Gazebo::Link, "link_state_samples" => port_name
-        component_model.transformer do
+        yield(port_name)
+        context.component_model.transformer do
             transform_output port_name, "#{frame_basename}_source" => "#{frame_basename}_target"
+        end
+    end
+
+    # Declare a dynamic service for the link export feature
+    #
+    # One uses it by first require'ing
+    dynamic_service CommonModels::Devices::Gazebo::Link, as: 'link_export' do
+        OroGen::RockGazebo::ModelTask.common_dynamic_link_export(self, self.name, options) do |port_name|
+            driver_for CommonModels::Devices::Gazebo::Link,
+                "link_state_samples" => port_name
+        end
+    end
+
+    # Declare a dynamic service that provides an interface to a submodel
+    #
+    # It's essentially a Link with the original model joints. The joint stuff is
+    # either-or, that is it is currently impossible to use two model/submodels
+    # at the same time.
+    dynamic_service CommonModels::Devices::Gazebo::Model, as: 'submodel_export' do
+        OroGen::RockGazebo::ModelTask.common_dynamic_link_export(self, self.name, options) do |port_name|
+            driver_for CommonModels::Devices::Gazebo::Model,
+                "pose_samples" => port_name
         end
     end
 
@@ -74,6 +95,7 @@ class OroGen::RockGazebo::ModelTask
         # Setup the link export based on the instanciated link_export services
         # The source/target information is stored in the transformer
         each_required_dynamic_service do |srv|
+            srv = srv.as(CommonModels::Devices::Gazebo::Link)
             # Find the task port that on which the service port is mapped
             task_port = srv.link_state_samples_port.to_component_port
             # And get the relevant transformer information
