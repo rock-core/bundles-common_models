@@ -47,27 +47,25 @@ class OroGen::RockGazebo::ModelTask
     # @api private
     #
     # Common implementation of the two dynamic services (Link and Model)
-    def self.common_dynamic_link_export(context, name, options)
-        port_name = options.fetch(:port_name, name)
+    def self.common_dynamic_link_export(context, name, port_name = name, options)
+        port_name = options.fetch(:port_name, port_name)
         frame_basename = options.fetch(:frame_basename, name)
         nans = [Float::NAN] * 9
         options[:cov_position]    ||= Types.base.Matrix3d.new(data: nans.dup)
         options[:cov_orientation] ||= Types.base.Matrix3d.new(data: nans.dup)
         options[:cov_velocity]    ||= Types.base.Matrix3d.new(data: nans.dup)
-
-        yield(port_name)
-        context.component_model.transformer do
-            transform_output port_name, "#{frame_basename}_source" => "#{frame_basename}_target"
-        end
+        return port_name, frame_basename
     end
 
     # Declare a dynamic service for the link export feature
     #
     # One uses it by first require'ing
     dynamic_service CommonModels::Devices::Gazebo::Link, as: 'link_export' do
-        OroGen::RockGazebo::ModelTask.common_dynamic_link_export(self, self.name, options) do |port_name|
-            driver_for CommonModels::Devices::Gazebo::Link,
-                "link_state_samples" => port_name
+        port_name, frame_basename = OroGen::RockGazebo::ModelTask.common_dynamic_link_export(self, self.name, options)
+        driver_for CommonModels::Devices::Gazebo::Link,
+            "link_state_samples" => port_name
+        component_model.transformer do
+            transform_output port_name, "#{frame_basename}_source" => "#{frame_basename}_target"
         end
     end
 
@@ -77,9 +75,15 @@ class OroGen::RockGazebo::ModelTask
     # either-or, that is it is currently impossible to use two model/submodels
     # at the same time.
     dynamic_service CommonModels::Devices::Gazebo::Model, as: 'submodel_export' do
-        OroGen::RockGazebo::ModelTask.common_dynamic_link_export(self, self.name, options) do |port_name|
-            driver_for CommonModels::Devices::Gazebo::Model,
-                "pose_samples" => port_name
+        name = self.name
+        _, frame_basename = OroGen::RockGazebo::ModelTask.common_dynamic_link_export(
+            self, self.name, options.merge!(port_name: "#{name}_pose_samples"))
+        driver_for CommonModels::Devices::Gazebo::Model,
+            "pose_samples" => "#{name}_pose_samples",
+            'joints_cmd'   => "#{name}_joints_cmd",
+            'joints_status'   => "#{name}_joints_samples"
+        component_model.transformer do
+            transform_output "#{name}_pose_samples", "#{frame_basename}_source" => "#{frame_basename}_target"
         end
     end
 
@@ -87,41 +91,77 @@ class OroGen::RockGazebo::ModelTask
         transform_output 'pose_samples', 'body' => 'world'
     end
 
+    def create_link_export(link_srv)
+        # Find the task port that on which the service port is mapped
+        task_port = link_srv.link_state_samples_port.to_component_port
+        # And get the relevant transformer information
+        if transform = find_transform_of_port(task_port)
+            if !transform.from || !transform.to
+                model_transform = self.class.find_transform_of_port(task_port)
+                raise ArgumentError, "you did not select the frames for #{model_transform.from} or #{model_transform.to}, needed for #{link_srv.name}"
+            end
+            device = find_device_attached_to(link_srv)
+            Types.rock_gazebo.LinkExport.new(
+                port_name: task_port.name,
+                source_link: transform.from,
+                target_link: transform.to,
+                source_frame: transform.from,
+                target_frame: transform.to,
+                port_period: Time.at(device.period || 0),
+                cov_position: link_srv.model.dynamic_service_options[:cov_position],
+                cov_orientation: link_srv.model.dynamic_service_options[:cov_orientation],
+                cov_velocity: link_srv.model.dynamic_service_options[:cov_velocity])
+        else
+            raise ArgumentError, "cannot find the transform information for #{task_port}"
+        end
+    end
+
+    def create_joint_export(model_srv)
+        device = find_device_attached_to(model_srv)
+
+        # Find the root model
+        sdf_model      = device.sdf
+        sdf_root_model = sdf_model
+        while sdf_root_model.parent && sdf_root_model.parent.kind_of?(SDF::Model)
+            sdf_root_model = sdf_root_model.parent
+        end
+
+        # The list of joint names
+        joint_names = sdf_model.each_joint.map do |j|
+            j.full_name(root: sdf_root_model)
+        end
+
+        if sdf_model != sdf_root_model
+            prefix = "#{sdf_model.full_name(root: sdf_root_model)}::"
+        end
+
+        Types.rock_gazebo.JointExport.new(
+            port_name: "#{model_srv.name}_joints",
+            joints: joint_names,
+            prefix: prefix || '',
+            port_period: Time.at(device.period || 0))
+    end
+
     def configure
         super
 
-        exports = Array.new
+        link_exports  = Array.new
+        joint_exports = Array.new
 
         # Setup the link export based on the instanciated link_export services
         # The source/target information is stored in the transformer
         each_required_dynamic_service do |srv|
-            srv = srv.as(CommonModels::Devices::Gazebo::Link)
-            # Find the task port that on which the service port is mapped
-            task_port = srv.link_state_samples_port.to_component_port
-            # And get the relevant transformer information
-            if transform = find_transform_of_port(task_port)
-                if !transform.from || !transform.to
-                    model_transform = self.class.find_transform_of_port(task_port)
-                    raise ArgumentError, "you did not select the frames for #{model_transform.from} or #{model_transform.to}, needed for #{srv.name}"
-                end
-                device = find_device_attached_to(srv)
-                exports << Types.rock_gazebo.LinkExport.new(
-                    port_name: task_port.name,
-                    source_link: transform.from,
-                    target_link: transform.to,
-                    source_frame: transform.from,
-                    target_frame: transform.to,
-                    port_period: Time.at(device.period || 0),
-                    cov_position: srv.model.dynamic_service_options[:cov_position],
-                    cov_orientation: srv.model.dynamic_service_options[:cov_orientation],
-                    cov_velocity: srv.model.dynamic_service_options[:cov_velocity])
-            else
-                raise ArgumentError, "cannot find the transform information for #{task_port}"
+            link_exports << create_link_export(
+                srv.as(CommonModels::Devices::Gazebo::Link))
+
+            if srv.fullfills?(CommonModels::Devices::Gazebo::Model)
+                joint_exports << create_joint_export(srv)
             end
         end
 
         properties.use_sim_time = !!Conf.gazebo.use_sim_time?
-        properties.exported_links = exports
+        properties.exported_links  = link_exports
+        properties.exported_joints = joint_exports
     end
 
     stub do

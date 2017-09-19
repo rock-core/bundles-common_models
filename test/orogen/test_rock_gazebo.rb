@@ -56,31 +56,60 @@ module OroGen
                 assert_equal 0.5, export.port_period.to_f
             end
 
-            it "sets up the subdevice services using both the link export feature and the joint ports" do
-                model = ModelTask.specialize
-                model.require_dynamic_service 'submodel_export', as: "test",
-                    port_name: 'src2tgt'
-                robot_model = Syskit::Robot::RobotDefinition.new
-                test_submodel_dev = robot_model.
-                    device CommonModels::Devices::Gazebo::Model, as: 'test', using: model.test_srv
-                test_submodel_dev.period(0.5)
+            describe "submodel export" do
+                before do
+                    model = ModelTask.specialize
+                    model.require_dynamic_service 'submodel_export', as: "test"
+                    robot_model = Syskit::Robot::RobotDefinition.new
 
-                model_with_frames = model.
-                    use_frames('test_source' => 'src_frame', 'test_target' => 'tgt_frame').
-                    with_arguments(test_dev: test_submodel_dev).
-                    transformer { frames 'src_frame', 'tgt_frame' }
-                task = syskit_stub_deploy_and_configure(model_with_frames)
-                
-                exports = task.orocos_task.exported_links
-                assert_equal 1, exports.size
+                    root_model = SDF::Model.from_string(<<-EOSDF)
+                        <model name="m">
+                            <model name="nested">
+                                <link name="root" />
+                                <link name="child" />
+                                <joint name="root2child" type="revolute">
+                                    <parent>root</parent>
+                                    <child>child</child>
+                                </joint>
+                            </model>
+                        </model>
+                    EOSDF
+                    test_submodel_dev = robot_model.
+                        device(CommonModels::Devices::Gazebo::Model, as: 'test', using: model.test_srv).
+                            period(0.5).
+                            sdf(root_model.each_model.first)
 
-                export = exports.first
-                assert_equal "src2tgt", export.port_name
-                assert_equal "src_frame", export.source_frame
-                assert_equal "tgt_frame", export.target_frame
-                assert_equal "src_frame", export.source_link
-                assert_equal "tgt_frame", export.target_link
-                assert_equal 0.5, export.port_period.to_f
+                    @model = model.
+                        use_frames('test_source' => 'src_frame', 'test_target' => 'tgt_frame').
+                        with_arguments(test_dev: test_submodel_dev).
+                        transformer { frames 'src_frame', 'tgt_frame' }
+                end
+
+                it "sets up the link export" do
+                    task = syskit_stub_deploy_and_configure(@model)
+                    
+                    exports = task.orocos_task.exported_links
+                    assert_equal 1, exports.size
+                    export = exports.first
+                    assert_equal "test_pose_samples", export.port_name
+                    assert_equal "src_frame", export.source_frame
+                    assert_equal "tgt_frame", export.target_frame
+                    assert_equal "src_frame", export.source_link
+                    assert_equal "tgt_frame", export.target_link
+                    assert_equal 0.5, export.port_period.to_f
+                end
+
+                it "sets up the joint export" do
+                    task = syskit_stub_deploy_and_configure(@model)
+
+                    exports = task.orocos_task.exported_joints
+                    assert_equal 1, exports.size
+                    export = exports.first
+                    assert_equal "test_joints", export.port_name
+                    assert_equal ['nested::root2child'], export.joints
+                    assert_equal 'nested::', export.prefix
+                    assert_equal 0.5, export.port_period.to_f
+                end
             end
 
             it "uses a default period of zero" do
