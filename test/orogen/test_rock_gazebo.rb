@@ -106,8 +106,8 @@ module OroGen
                     assert_equal 1, exports.size
                     export = exports.first
                     assert_equal "test_joints", export.port_name
-                    assert_equal ['nested::root2child'], export.joints
-                    assert_equal 'nested::', export.prefix
+                    assert_equal ['m::nested::root2child'], export.joints
+                    assert_equal 'm::', export.prefix
                     assert_equal 0.5, export.port_period.to_f
                 end
             end

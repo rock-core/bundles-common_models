@@ -128,11 +128,11 @@ class OroGen::RockGazebo::ModelTask
 
         # The list of joint names
         joint_names = sdf_model.each_joint.map do |j|
-            j.full_name(root: sdf_root_model)
+            j.full_name(root: sdf_root_model.parent)
         end
 
         if sdf_model != sdf_root_model
-            prefix = "#{sdf_model.full_name(root: sdf_root_model)}::"
+            prefix = "#{sdf_model.parent.full_name(root: sdf_root_model.parent)}::"
         end
 
         Types.rock_gazebo.JointExport.new(
