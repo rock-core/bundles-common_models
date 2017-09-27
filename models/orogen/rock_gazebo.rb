@@ -48,7 +48,7 @@ class OroGen::RockGazebo::ModelTask
     #
     # Common implementation of the two dynamic services (Link and Model)
     def self.common_dynamic_link_export(context, name, port_name = name, options)
-        port_name = options.fetch(:port_name, port_name)
+        port_name      = options.fetch(:port_name, port_name)
         frame_basename = options.fetch(:frame_basename, name)
         nans = [Float::NAN] * 9
         options[:cov_position]    ||= Types.base.Matrix3d.new(data: nans.dup)
@@ -63,7 +63,9 @@ class OroGen::RockGazebo::ModelTask
     dynamic_service CommonModels::Devices::Gazebo::Link, as: 'link_export' do
         port_name, frame_basename = OroGen::RockGazebo::ModelTask.common_dynamic_link_export(self, self.name, options)
         driver_for CommonModels::Devices::Gazebo::Link,
-            "link_state_samples" => port_name
+            "link_state_samples" => port_name,
+            'wrench_samples' => "#{port_name}_wrench",
+            'acceleration_samples' => "#{port_name}_acceleration"
         component_model.transformer do
             transform_output port_name, "#{frame_basename}_source" => "#{frame_basename}_target"
         end

@@ -12,8 +12,6 @@ module CommonModels
                 provides Services::Pose
                 provides Services::Velocity,
                     'velocity_samples' => 'pose_samples'
-                provides Devices::Gazebo::Link,
-                    'link_state_samples' => 'pose_samples'
 
                 # Rename status_out and command_in to something that talks about
                 # joints
