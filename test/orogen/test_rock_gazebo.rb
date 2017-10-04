@@ -85,20 +85,6 @@ module OroGen
                         transformer { frames 'src_frame', 'tgt_frame' }
                 end
 
-                it "sets up the link export" do
-                    task = syskit_stub_deploy_and_configure(@model)
-                    
-                    exports = task.orocos_task.exported_links
-                    assert_equal 1, exports.size
-                    export = exports.first
-                    assert_equal "test_pose_samples", export.port_name
-                    assert_equal "src_frame", export.source_frame
-                    assert_equal "tgt_frame", export.target_frame
-                    assert_equal "src_frame", export.source_link
-                    assert_equal "tgt_frame", export.target_link
-                    assert_equal 0.5, export.port_period.to_f
-                end
-
                 it "sets up the joint export" do
                     task = syskit_stub_deploy_and_configure(@model)
 

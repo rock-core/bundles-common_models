@@ -153,9 +153,10 @@ class OroGen::RockGazebo::ModelTask
         # Setup the link export based on the instanciated link_export services
         # The source/target information is stored in the transformer
         each_required_dynamic_service do |srv|
-            link_exports << create_link_export(
-                srv.as(CommonModels::Devices::Gazebo::Link))
-
+            if srv.fullfills?(CommonModels::Devices::Gazebo::Link)
+                link_exports << create_link_export(
+                    srv.as(CommonModels::Devices::Gazebo::Link))
+            end
             if srv.fullfills?(CommonModels::Devices::Gazebo::Model)
                 joint_exports << create_joint_export(srv)
             end
