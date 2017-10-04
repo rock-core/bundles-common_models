@@ -42,7 +42,7 @@ end
 # Note that in most cases you won't have to access this interface directly, the
 # rock_gazebo plugin does it for you through a high-level API on the profiles.
 class OroGen::RockGazebo::ModelTask
-    driver_for CommonModels::Devices::Gazebo::Model, as: 'model'
+    driver_for CommonModels::Devices::Gazebo::RootModel, as: 'model'
 
     # @api private
     #
@@ -81,12 +81,8 @@ class OroGen::RockGazebo::ModelTask
         _, frame_basename = OroGen::RockGazebo::ModelTask.common_dynamic_link_export(
             self, self.name, options.merge!(port_name: "#{name}_pose_samples"))
         driver_for CommonModels::Devices::Gazebo::Model,
-            "pose_samples" => "#{name}_pose_samples",
             'joints_cmd'   => "#{name}_joints_cmd",
             'joints_status'   => "#{name}_joints_samples"
-        component_model.transformer do
-            transform_output "#{name}_pose_samples", "#{frame_basename}_source" => "#{frame_basename}_target"
-        end
     end
 
     transformer do

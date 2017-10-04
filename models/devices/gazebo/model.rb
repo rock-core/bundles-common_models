@@ -9,10 +9,6 @@ module CommonModels
             device_type 'Model' do
                 provides Entity
 
-                provides Services::Pose
-                provides Services::Velocity,
-                    'velocity_samples' => 'pose_samples'
-
                 # Rename status_out and command_in to something that talks about
                 # joints
                 input_port 'joints_cmd', '/base/samples/Joints'
