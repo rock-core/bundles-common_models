@@ -52,18 +52,31 @@ module CommonModels
                     expect_execution do
                         task.stop!
                         task.stop_event.on { |_| reader.clear }
-                    end.to { emit task.interrupt_event }
-                    refute task.aborted_event.emitted?
+                    end.to do
+                        emit task.interrupt_event
+                        not_emit task.aborted_event
+                    end
                     refute reader.read_new
                 end
 
-                it "aborts if the write thread raises an exception" do
+                it "interrupts the task if the write thread raises an exception" do
                     plan.add_mission_task(task.execution_agent)
                     expect_execution { task.write_thread.raise Interrupt }.
-                        to { emit task.aborted_event }
+                        to do
+                            emit task.write_thread_error_event
+                            emit task.stop_event
+                        end
                     # Verify that the task got stopped properly regardless of
                     # the abort
                     assert_equal :STOPPED, task.orocos_task.rtt_state
+                end
+
+                it "reports the termination cause in the event" do
+                    plan.add_mission_task(task.execution_agent)
+                    e = RuntimeError.exception "test"
+                    finished = expect_execution { task.write_thread.raise e }.
+                        to { emit task.write_thread_error_event }
+                    assert_equal e, finished.context.first
                 end
             end
         end

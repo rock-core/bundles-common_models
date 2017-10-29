@@ -60,13 +60,16 @@ module CommonModels
                 super(context)
             end
 
+            event :write_thread_error
+            signal :write_thread_error => :interrupt
+
             poll do
                 if !@write_thread.alive?
                     begin
-                        @write_thread.value
-                        aborted! if !stop_event.pending?
+                        result = @write_thread.value
+                        write_thread_error_event.emit(result) if !stop_event.pending?
                     rescue ::Exception => e
-                        aborted!
+                        write_thread_error_event.emit(e)
                     end
                 end
             end
