@@ -13,7 +13,6 @@ module CommonModels
                 # Rename status_out and command_in to something that talks about
                 # joints
                 input_port 'joints_cmd', '/base/samples/Joints'
-                input_port 'model_pose', '/base/samples/RigidBodyState'
                 output_port 'joints_status', '/base/samples/Joints'
                 provides Services::JointsControlledSystem,
                     'command_in' => 'joints_cmd',
