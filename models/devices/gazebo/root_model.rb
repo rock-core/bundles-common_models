@@ -7,6 +7,8 @@ module CommonModels
             device_type 'RootModel' do
                 provides Model
 
+                input_port 'model_pose', '/base/samples/RigidBodyState'
+                
                 provides Services::Pose
                 provides Services::Velocity,
                     'velocity_samples' => 'pose_samples'
