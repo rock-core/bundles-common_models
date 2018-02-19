@@ -5,7 +5,7 @@ module Base
     backward_compatible_constant :ControllerSrv         , "Rock::Services::Controller"         , 'models/services/controller'
     backward_compatible_constant :ControlledSystemSrv         , "Rock::Services::ControlledSystem"         , 'models/services/controlled_system'
 
-    if Syskit.conf.backward_compatible_naming?
+    if Roby.app.backward_compatible_naming?
         Syskit.warn "  in addition, the ControlLoop declaration API has changed, please look at the API documentation"
         Syskit.warn "  of Rock::Services::ControlLoop in models/services/control_loop"
         Syskit.warn "  and of Rock::Compositions::ControlLoop in models/compositions/control_loop"
@@ -64,13 +64,13 @@ module Base
         Syskit.error "  of Rock::Services::ControlLoop in models/services/control_loop"
         Syskit.error "  and of Rock::Compositions::ControlLoop in models/compositions/control_loop"
         Syskit.error "  to get the old names, you still have the option of adding"
-        Syskit.error "    Syskit.conf.backward_compatible_naming = true"
+        Syskit.error "    Roby.app.backward_compatible_naming = true"
         Syskit.error "  in config/init.rb, but beware that this option will be removed in the near future"
     end
 end
 
 
-if Syskit.conf.backward_compatible_naming?
+if Roby.app.backward_compatible_naming?
     Syskit.warn "  the Actuator* control loop and services are now available under Rock::Services::ActuatorXXX and Rock::Compositions::ActuatorXXX, and can be loaded with models/services/actuator_control_loop and models/compositions/actuator_control_loop"
     Syskit.warn "  the Joints* control loop and services are now available under Rock::Services::JointsXXX and Rock::Compositions::JointsXXX, and can be loaded with models/services/joints_control_loop and models/compositions/joints_control_loop"
     Syskit.warn "  the Motion2D* control loop and services are now available under Rock::Services::Motion2DXXX and Rock::Compositions::Motion2DXXX, and can be loaded with models/services/motion2d_control_loop and models/compositions/motion2d_control_loop"
@@ -88,7 +88,7 @@ else
     Syskit.error "  the Joints* control loop and services are now available under Rock::Services::JointsXXX and Rock::Compositions::JointsXXX, and can be loaded with models/services/joints_control_loop and models/compositions/joints_control_loop"
     Syskit.error "  the Motion2D* control loop and services are now available under Rock::Services::Motion2DXXX and Rock::Compositions::Motion2DXXX, and can be loaded with models/services/motion2d_control_loop and models/compositions/motion2d_control_loop"
     Syskit.error "  to get the old names, you still have the option of adding"
-    Syskit.error "    Syskit.conf.backward_compatible_naming = true"
+    Syskit.error "    Roby.app.backward_compatible_naming = true"
     Syskit.error "  in config/init.rb, but beware that this option will be removed in the near future"
 end
 
