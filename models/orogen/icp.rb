@@ -1,4 +1,4 @@
-require 'rock/blueprints/pose'
+require 'models/blueprints/pose'
 
 class OroGen::Icp::Task
     find_output_port('pose_samples').
