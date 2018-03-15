@@ -126,8 +126,9 @@ class OroGen::RockGazebo::ModelTask
 
         # The list of joint names
         joint_names = sdf_model.each_joint.map do |j|
+            next if j.type == "fixed"
             j.full_name(root: sdf_root_model.parent)
-        end
+        end.compact
 
         if sdf_model != sdf_root_model
             prefix = "#{sdf_model.parent.full_name(root: sdf_root_model.parent)}::"

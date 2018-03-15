@@ -57,12 +57,23 @@ module OroGen
             end
 
             describe "submodel export" do
-                before do
+                def make_nested_model(sdf)
                     model = ModelTask.specialize
                     model.require_dynamic_service 'submodel_export', as: "test"
                     robot_model = Syskit::Robot::RobotDefinition.new
+                    root_model = SDF::Model.from_string(sdf)
+                    test_submodel_dev = robot_model.
+                        device(CommonModels::Devices::Gazebo::Model, as: 'test', using: model.test_srv).
+                            period(0.5).
+                            sdf(root_model.each_model.first)
 
-                    root_model = SDF::Model.from_string(<<-EOSDF)
+                    model.use_frames('test_source' => 'src_frame', 'test_target' => 'tgt_frame').
+                        with_arguments(test_dev: test_submodel_dev).
+                        transformer { frames 'src_frame', 'tgt_frame' }
+                end
+
+                it "sets up the joint export" do
+                    model = make_nested_model(<<-SDF_MODEL)
                         <model name="m">
                             <model name="nested">
                                 <link name="root" />
@@ -73,26 +84,36 @@ module OroGen
                                 </joint>
                             </model>
                         </model>
-                    EOSDF
-                    test_submodel_dev = robot_model.
-                        device(CommonModels::Devices::Gazebo::Model, as: 'test', using: model.test_srv).
-                            period(0.5).
-                            sdf(root_model.each_model.first)
-
-                    @model = model.
-                        use_frames('test_source' => 'src_frame', 'test_target' => 'tgt_frame').
-                        with_arguments(test_dev: test_submodel_dev).
-                        transformer { frames 'src_frame', 'tgt_frame' }
-                end
-
-                it "sets up the joint export" do
-                    task = syskit_stub_deploy_and_configure(@model)
+                    SDF_MODEL
+                    task = syskit_stub_deploy_and_configure(model)
 
                     exports = task.orocos_task.exported_joints
                     assert_equal 1, exports.size
                     export = exports.first
                     assert_equal "test_joints", export.port_name
                     assert_equal ['m::nested::root2child'], export.joints
+                    assert_equal 'm::', export.prefix
+                    assert_equal 0.5, export.port_period.to_f
+                end
+
+                it "ignores fixed joints" do
+                    model = make_nested_model(<<-SDF_MODEL)
+                        <model name="m">
+                            <model name="nested">
+                                <link name="root" />
+                                <link name="child" />
+                                <joint name="root2child" type="fixed">
+                                    <parent>root</parent>
+                                    <child>child</child>
+                                </joint>
+                            </model>
+                        </model>
+                    SDF_MODEL
+                    task = syskit_stub_deploy_and_configure(model)
+
+                    export = task.orocos_task.exported_joints.first
+                    assert_equal "test_joints", export.port_name
+                    assert_equal [], export.joints
                     assert_equal 'm::', export.prefix
                     assert_equal 0.5, export.port_period.to_f
                 end
