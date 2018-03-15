@@ -1,4 +1,4 @@
-require 'rock/models/services/control_loop'
+require 'common_models/models/services/control_loop'
 
 module Rock
     module Compositions

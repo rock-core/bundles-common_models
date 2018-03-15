@@ -1,6 +1,6 @@
-require 'rock/models/blueprints/control'
-require 'rock/models/blueprints/pose'
-require 'rock/models/blueprints/devices'
+require 'common_models/models/blueprints/control'
+require 'common_models/models/blueprints/pose'
+require 'common_models/models/blueprints/devices'
 
 using_task_library 'simulation'
 

@@ -1,5 +1,5 @@
-require 'rock/models/devices/gazebo/entity'
-require 'rock/models/services/laser_scan'
+require 'common_models/models/devices/gazebo/entity'
+require 'common_models/models/services/laser_scan'
 
 module Rock
     module Devices

@@ -1,4 +1,4 @@
-require 'rock/models/compositions/pose_predicate'
+require 'common_models/models/compositions/pose_predicate'
 
 module Rock
     module Compositions

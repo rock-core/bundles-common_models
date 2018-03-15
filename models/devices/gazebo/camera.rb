@@ -1,5 +1,5 @@
-require 'rock/models/devices/gazebo/entity'
-require 'rock/models/services/image'
+require 'common_models/models/devices/gazebo/entity'
+require 'common_models/models/services/image'
 
 module Rock
     module Devices

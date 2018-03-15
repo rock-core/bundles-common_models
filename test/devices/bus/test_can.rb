@@ -1,4 +1,4 @@
-require 'rock/models/devices/bus/can'
+require 'common_models/models/devices/bus/can'
 using_task_library 'canbus'
 module Rock
     module Devices

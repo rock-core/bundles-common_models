@@ -1,4 +1,4 @@
-require 'rock/models/services/position'
+require 'common_models/models/services/position'
 
 module Rock
     module Compositions

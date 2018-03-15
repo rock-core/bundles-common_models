@@ -1,5 +1,5 @@
 import_types_from 'base'
-require 'rock/models/services/pose'
+require 'common_models/models/services/pose'
 
 module Rock
     module Services

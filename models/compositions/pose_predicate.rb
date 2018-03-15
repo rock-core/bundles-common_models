@@ -1,5 +1,5 @@
 require 'base/float'
-require 'rock/models/services/pose'
+require 'common_models/models/services/pose'
 
 module Rock
     module Compositions

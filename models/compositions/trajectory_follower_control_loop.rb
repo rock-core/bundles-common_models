@@ -1,6 +1,6 @@
-require 'rock/models/compositions/motion2d_control_loop'
-require 'rock/models/services/pose'
-require 'rock/models/services/trajectory_execution'
+require 'common_models/models/compositions/motion2d_control_loop'
+require 'common_models/models/services/pose'
+require 'common_models/models/services/trajectory_execution'
 using_task_library 'trajectory_follower'
 
 module Rock

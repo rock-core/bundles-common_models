@@ -1,6 +1,6 @@
-require 'rock/models/devices/gazebo/entity'
-require 'rock/models/services/orientation'
-require 'rock/models/services/imu_calibrated_sensors'
+require 'common_models/models/devices/gazebo/entity'
+require 'common_models/models/services/orientation'
+require 'common_models/models/services/imu_calibrated_sensors'
 
 module Rock
     module Devices
