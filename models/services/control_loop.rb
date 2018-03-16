@@ -1,5 +1,5 @@
-require "models/services/controller.rb"
-require "models/services/controlled_system.rb"
+require "common_models/models/services/controller.rb"
+require "common_models/models/services/controlled_system.rb"
 
 module CommonModels
     module Services

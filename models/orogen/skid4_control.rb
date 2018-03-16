@@ -1,4 +1,4 @@
-require 'models/blueprints/control'
+require 'common_models/models/blueprints/control'
 
 class OroGen::Skid4Control::SimpleController
     provides Base::ActuatorControllerSrv, :as => 'controller'

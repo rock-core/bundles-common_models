@@ -1,4 +1,4 @@
-require "models/blueprints/devices"
+require "common_models/models/blueprints/devices"
 using_task_library "camera_prosilica"
 
 class OroGen::CameraProsilica::Task

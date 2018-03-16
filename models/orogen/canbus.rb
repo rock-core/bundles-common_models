@@ -1,4 +1,4 @@
-require 'models/devices/bus/can'
+require 'common_models/models/devices/bus/can'
 
 class OroGen::Canbus::Task
     driver_for CommonModels::Devices::Bus::CAN, as: 'driver'

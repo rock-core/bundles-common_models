@@ -1,5 +1,5 @@
-require 'models/services/motion2d_control_loop'
-require 'models/compositions/motion2d_control_loop'
+require 'common_models/models/services/motion2d_control_loop'
+require 'common_models/models/compositions/motion2d_control_loop'
 
 # Integration of the trajectory follower component
 #

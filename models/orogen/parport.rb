@@ -1,4 +1,4 @@
-require 'models/blueprints/sensors'
+require 'common_models/models/blueprints/sensors'
 
 Parport.com_bus_type 'GPIOReader', :message_type => '/parport/StateChange', :override_policy => false
 Dev::Bus.com_bus_type 'Parport' do

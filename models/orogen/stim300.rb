@@ -1,4 +1,4 @@
-require 'models/blueprints/sensors'
+require 'common_models/models/blueprints/sensors'
 
 Dev::Sensors.device_type 'Stim300' do
     provides Base::CalibratedIMUSensorsSrv

@@ -1,4 +1,4 @@
-require 'models/blueprints/sensors'
+require 'common_models/models/blueprints/sensors'
 Dev::Sensors.device_type 'SickLMS' do
     provides Base::LaserRangeFinderSrv
 end

@@ -1,3 +1,3 @@
-require "models/devices/input/joystick"
+require "common_models/models/devices/input/joystick"
 
-require "models/devices/input/graupner"
+require "common_models/models/devices/input/graupner"

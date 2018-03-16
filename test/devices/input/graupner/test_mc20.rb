@@ -1,4 +1,4 @@
-require 'models/devices/input/graupner/mc20'
+require 'common_models/models/devices/input/graupner/mc20'
 
 module CommonModels
     module Devices

@@ -1,8 +1,8 @@
-require "models/devices/gazebo"
-require "models/devices/bus"
+require "common_models/models/devices/gazebo"
+require "common_models/models/devices/bus"
 
-require "models/devices/sonar"
+require "common_models/models/devices/sonar"
 
-require "models/devices/input"
+require "common_models/models/devices/input"
 
-require "models/devices/gps"
+require "common_models/models/devices/gps"

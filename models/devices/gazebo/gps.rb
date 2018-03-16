@@ -1,5 +1,5 @@
-require 'models/devices/gazebo/entity'
-require 'models/services/position'
+require 'common_models/models/devices/gazebo/entity'
+require 'common_models/models/services/position'
 
 module CommonModels
     module Devices

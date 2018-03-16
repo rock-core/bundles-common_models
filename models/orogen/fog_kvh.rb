@@ -1,5 +1,5 @@
 using_task_library "fog_kvh"
-require 'models/blueprints/sensors'
+require 'common_models/models/blueprints/sensors'
 
 module Dev
     module Sensors

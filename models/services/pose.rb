@@ -1,7 +1,7 @@
 import_types_from 'base'
-require 'models/services/position'
-require 'models/services/orientation'
-require 'models/services/orientation_with_z'
+require 'common_models/models/services/position'
+require 'common_models/models/services/orientation'
+require 'common_models/models/services/orientation_with_z'
 
 module CommonModels
     module Services

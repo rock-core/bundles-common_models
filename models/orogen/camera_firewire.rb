@@ -1,5 +1,5 @@
-require 'models/blueprints/devices'
-require 'models/blueprints/timestamping'
+require 'common_models/models/blueprints/devices'
+require 'common_models/models/blueprints/timestamping'
 
 class OroGen::CameraFirewire::CameraTask
     driver_for Dev::Sensors::Cameras::Firewire, :as => 'driver'

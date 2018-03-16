@@ -1,5 +1,5 @@
 import_types_from 'base'
-require 'models/blueprints/pose'
+require 'common_models/models/blueprints/pose'
 
 module Base
     data_service_type "ImageConsumerSrv" do 
@@ -8,11 +8,11 @@ module Base
     data_service_type 'IMUSensorsSrv' do
         output_port 'sensors', '/base/samples/IMUSensors'
     end
-    autoload :CompensatedIMUSensorsSrv, 'models/blueprints/backwards/sensors.rb'
-    autoload :CalibratedIMUSensorsSrv, 'models/blueprints/backwards/sensors.rb'
-    autoload :ImageProviderSrv, 'models/blueprints/backwards/sensors.rb'
-    autoload :LaserRangeFinderSrv, 'models/blueprints/backwards/sensors.rb'
-    autoload :SonarScanProviderSrv, 'models/blueprints/backwards/sensors.rb'
+    autoload :CompensatedIMUSensorsSrv, 'common_models/models/blueprints/backwards/sensors.rb'
+    autoload :CalibratedIMUSensorsSrv, 'common_models/models/blueprints/backwards/sensors.rb'
+    autoload :ImageProviderSrv, 'common_models/models/blueprints/backwards/sensors.rb'
+    autoload :LaserRangeFinderSrv, 'common_models/models/blueprints/backwards/sensors.rb'
+    autoload :SonarScanProviderSrv, 'common_models/models/blueprints/backwards/sensors.rb'
 
     data_service_type 'StereoPairProviderSrv' do
         output_port 'images', ro_ptr('/base/samples/frame/FramePair')

@@ -1,5 +1,5 @@
-require 'models/devices/gazebo/model'
-require 'models/devices/gazebo/link'
+require 'common_models/models/devices/gazebo/model'
+require 'common_models/models/devices/gazebo/link'
 
 module CommonModels
     module Devices

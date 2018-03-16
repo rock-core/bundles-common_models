@@ -1,4 +1,4 @@
-require 'models/services/position'
+require 'common_models/models/services/position'
 
 module CommonModels
     module Services
