@@ -1,4 +1,4 @@
-require 'models/blueprints/devices'
+require 'common_models/models/blueprints/devices'
 class OroGen::ServoDynamixel::Task
     driver_for Dev::Actuators::Dynamixel, :as => 'driver'
 

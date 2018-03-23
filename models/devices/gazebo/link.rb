@@ -1,9 +1,9 @@
-require 'models/devices/gazebo/entity'
-require 'models/services/pose'
-require 'models/services/velocity'
-require 'models/services/transformation'
-require 'models/services/acceleration'
-require 'models/services/wrench'
+require 'common_models/models/devices/gazebo/entity'
+require 'common_models/models/services/pose'
+require 'common_models/models/services/velocity'
+require 'common_models/models/services/transformation'
+require 'common_models/models/services/acceleration'
+require 'common_models/models/services/wrench'
 
 module CommonModels
     module Devices

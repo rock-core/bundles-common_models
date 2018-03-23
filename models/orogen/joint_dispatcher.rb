@@ -1,4 +1,4 @@
-require 'models/blueprints/control'
+require 'common_models/models/blueprints/control'
 using_task_library 'joint_dispatcher'
 
 module OroGen::JointDispatcher

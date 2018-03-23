@@ -1,4 +1,4 @@
-require 'models/blueprints/pose'
+require 'common_models/models/blueprints/pose'
 Dev::Sensors.device_type 'Vicon' do
     provides Base::PoseSrv
 end

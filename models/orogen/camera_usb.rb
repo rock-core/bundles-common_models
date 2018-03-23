@@ -1,4 +1,4 @@
-require 'models/blueprints/devices'
+require 'common_models/models/blueprints/devices'
 
 class OroGen::CameraUsb::Task
     driver_for Dev::Sensors::Cameras::USB, :as => 'driver'

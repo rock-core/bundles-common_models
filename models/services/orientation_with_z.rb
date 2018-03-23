@@ -1,6 +1,6 @@
 import_types_from 'base'
-require 'models/services/orientation'
-require 'models/services/z_provider'
+require 'common_models/models/services/orientation'
+require 'common_models/models/services/z_provider'
 
 module CommonModels
     module Services

@@ -1,4 +1,4 @@
-require 'models/blueprints/map_gen/map_generator_srv'
+require 'common_models/models/blueprints/map_gen/map_generator_srv'
 
 class OroGen::Envire::SynchronizationTransmitter
     argument :initial_map

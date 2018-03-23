@@ -1,4 +1,4 @@
-require 'models/compositions/maintain_pose'
+require 'common_models/models/compositions/maintain_pose'
 require 'timecop'
 
 module CommonModels

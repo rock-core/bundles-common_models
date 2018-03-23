@@ -1,4 +1,4 @@
-require 'models/services/raw_input_command'
+require 'common_models/models/services/raw_input_command'
 
 module CommonModels
     module Devices

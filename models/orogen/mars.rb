@@ -1,6 +1,6 @@
-require 'models/blueprints/control'
-require 'models/blueprints/pose'
-require 'models/blueprints/devices'
+require 'common_models/models/blueprints/control'
+require 'common_models/models/blueprints/pose'
+require 'common_models/models/blueprints/devices'
 
 using_task_library 'mars'
 

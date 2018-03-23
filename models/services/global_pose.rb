@@ -1,6 +1,6 @@
 import_types_from 'base'
-require 'models/services/pose'
-require 'models/services/global_position'
+require 'common_models/models/services/pose'
+require 'common_models/models/services/global_position'
 
 module CommonModels
     module Services

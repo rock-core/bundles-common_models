@@ -1,4 +1,4 @@
-require 'models/services/control_loop'
+require 'common_models/models/services/control_loop'
 
 module CommonModels
     module Compositions

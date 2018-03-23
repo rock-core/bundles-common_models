@@ -1,4 +1,4 @@
-require 'models/blueprints/sensors'
+require 'common_models/models/blueprints/sensors'
 using_task_library 'stereo'
 
 module ImageProcessing

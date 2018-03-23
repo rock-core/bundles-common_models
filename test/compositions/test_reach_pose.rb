@@ -1,4 +1,4 @@
-require 'models/compositions/reach_pose'
+require 'common_models/models/compositions/reach_pose'
 require 'timecop'
 
 module CommonModels

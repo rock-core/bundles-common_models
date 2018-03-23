@@ -1,8 +1,8 @@
-require 'models/devices/gazebo/entity'
-require 'models/devices/gazebo/link'
-require 'models/services/joints_control_loop'
-require 'models/services/pose'
-require 'models/services/velocity'
+require 'common_models/models/devices/gazebo/entity'
+require 'common_models/models/devices/gazebo/link'
+require 'common_models/models/services/joints_control_loop'
+require 'common_models/models/services/pose'
+require 'common_models/models/services/velocity'
 
 module CommonModels
     module Devices

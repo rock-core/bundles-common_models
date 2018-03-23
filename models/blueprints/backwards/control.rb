@@ -2,14 +2,14 @@ require 'common_models/backward_module_name'
 Syskit.warn_about_new_naming_convention
 Syskit.warn "The Base::ControlLoop functionality that was defined in models/blueprints/pose is now defined under models/compositions/, and has been renamed to match the new Syskit naming conventions"
 module Base
-    backward_compatible_constant :ControllerSrv         , "Rock::Services::Controller"         , 'models/services/controller'
-    backward_compatible_constant :ControlledSystemSrv         , "Rock::Services::ControlledSystem"         , 'models/services/controlled_system'
+    backward_compatible_constant :ControllerSrv         , "Rock::Services::Controller"         , 'common_models/models/services/controller'
+    backward_compatible_constant :ControlledSystemSrv         , "Rock::Services::ControlledSystem"         , 'common_models/models/services/controlled_system'
 
     if Roby.app.backward_compatible_naming?
         Syskit.warn "  in addition, the ControlLoop declaration API has changed, please look at the API documentation"
         Syskit.warn "  of Rock::Services::ControlLoop in models/services/control_loop"
         Syskit.warn "  and of Rock::Compositions::ControlLoop in models/compositions/control_loop"
-        require 'models/compositions/control_loop'
+        require 'common_models/models/compositions/control_loop'
         class ControlLoop < Rock::Compositions::ControlLoop
             def self.declare(name, control_type, options = Hash.new)
                 options, _ = Kernel.filter_options options, :feedback_type
@@ -74,9 +74,9 @@ if Roby.app.backward_compatible_naming?
     Syskit.warn "  the Actuator* control loop and services are now available under Rock::Services::ActuatorXXX and Rock::Compositions::ActuatorXXX, and can be loaded with models/services/actuator_control_loop and models/compositions/actuator_control_loop"
     Syskit.warn "  the Joints* control loop and services are now available under Rock::Services::JointsXXX and Rock::Compositions::JointsXXX, and can be loaded with models/services/joints_control_loop and models/compositions/joints_control_loop"
     Syskit.warn "  the Motion2D* control loop and services are now available under Rock::Services::Motion2DXXX and Rock::Compositions::Motion2DXXX, and can be loaded with models/services/motion2d_control_loop and models/compositions/motion2d_control_loop"
-    require 'models/compositions/actuator_control_loop'
-    require 'models/compositions/joints_control_loop'
-    require 'models/compositions/motion2d_control_loop'
+    require 'common_models/models/compositions/actuator_control_loop'
+    require 'common_models/models/compositions/joints_control_loop'
+    require 'common_models/models/compositions/motion2d_control_loop'
     Base::ControlLoop.declare_backward_compatible(
         'Actuator', '/base/actuators/Command', feedback_type: '/base/actuators/Status')
     Base::ControlLoop.declare_backward_compatible(

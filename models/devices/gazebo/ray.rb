@@ -1,5 +1,5 @@
-require 'models/devices/gazebo/entity'
-require 'models/services/laser_scan'
+require 'common_models/models/devices/gazebo/entity'
+require 'common_models/models/services/laser_scan'
 
 module CommonModels
     module Devices

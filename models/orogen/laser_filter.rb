@@ -1,5 +1,5 @@
-require 'models/blueprints/sensors'
-require 'models/blueprints/devices'
+require 'common_models/models/blueprints/sensors'
+require 'common_models/models/blueprints/devices'
 
 class OroGen::LaserFilter::Task
     provides Base::LaserRangeFinderSrv, :as => 'filtered_scans'

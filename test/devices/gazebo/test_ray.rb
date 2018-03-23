@@ -1,4 +1,4 @@
-require 'models/devices/gazebo/ray'
+require 'common_models/models/devices/gazebo/ray'
 
 module CommonModels
     module Devices

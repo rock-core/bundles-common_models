@@ -1,4 +1,4 @@
-require 'models/compositions/wait_for_position'
+require 'common_models/models/compositions/wait_for_position'
 
 module CommonModels
     module Compositions

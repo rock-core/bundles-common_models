@@ -1,4 +1,4 @@
-require 'models/compositions/constant_generator'
+require 'common_models/models/compositions/constant_generator'
 module CommonModels
     module Compositions
         describe ConstantGenerator do

@@ -1,4 +1,4 @@
-require 'models/devices/bus/raw_io'
+require 'common_models/models/devices/bus/raw_io'
 
 module CommonModels
     module Devices

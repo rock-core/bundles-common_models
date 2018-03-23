@@ -1,5 +1,5 @@
-require 'models/blueprints/sensors'
-require 'models/blueprints/timestamping'
+require 'common_models/models/blueprints/sensors'
+require 'common_models/models/blueprints/timestamping'
 
 # The module under which all device models are defined
 module Dev

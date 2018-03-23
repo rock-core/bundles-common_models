@@ -1,4 +1,4 @@
-require 'models/devices/gazebo/root_model'
+require 'common_models/models/devices/gazebo/root_model'
 
 module CommonModels
     module Devices

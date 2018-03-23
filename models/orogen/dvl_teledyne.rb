@@ -1,5 +1,5 @@
-require 'models/blueprints/timestamping'
-require 'models/blueprints/devices'
+require 'common_models/models/blueprints/timestamping'
+require 'common_models/models/blueprints/devices'
 
 module Dev
     module Sensors

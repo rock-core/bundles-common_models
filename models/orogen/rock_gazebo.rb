@@ -1,6 +1,6 @@
-require 'models/services/joints_control_loop'
-require 'models/services/transformation'
-require 'models/devices/gazebo'
+require 'common_models/models/services/joints_control_loop'
+require 'common_models/models/services/transformation'
+require 'common_models/models/devices/gazebo'
 
 class OroGen::RockGazebo::WorldTask
     # Customizes the configuration step.

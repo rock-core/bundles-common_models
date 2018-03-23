@@ -1,4 +1,4 @@
-require 'models/services/global_position'
+require 'common_models/models/services/global_position'
 
 module CommonModels
     module Devices

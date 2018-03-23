@@ -1,1 +1,1 @@
-require "models/services/gazebo/model_update"
+require "common_models/models/services/gazebo/model_update"

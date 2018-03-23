@@ -1,5 +1,5 @@
 require 'base/float'
-require 'models/services/pose'
+require 'common_models/models/services/pose'
 
 module CommonModels
     module Compositions
