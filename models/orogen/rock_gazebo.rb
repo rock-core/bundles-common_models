@@ -86,7 +86,7 @@ class OroGen::RockGazebo::ModelTask
     end
 
     transformer do
-        transform_output 'pose_samples', 'body' => 'world'
+        transform_output 'pose_samples', 'model' => 'world'
     end
 
     def create_link_export(link_srv)
