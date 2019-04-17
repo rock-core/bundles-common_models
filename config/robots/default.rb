@@ -48,7 +48,11 @@ Robot.requires do
 
     # Load all in services/ and compositions/ except those things that have a
     # dependency
-    require_all_except Roby.app.app_dir, 'models', 'services', except: excluded_services
+    #
+    # Exclude joints_trajectory_open_loop_control.rb, it conflicts with
+    # joints_trajectory_control_loop
+    require_all_except Roby.app.app_dir, 'models', 'services',
+        except: [excluded_services, 'joints_trajectory_open_loop_control.rb']
     require_all_except Roby.app.app_dir, 'models', 'compositions', except: excluded_compositions
 end
 

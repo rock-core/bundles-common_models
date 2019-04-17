@@ -16,11 +16,14 @@ module CommonModels
             def self.check_already_declared(name, *suffixes)
                 suffixes.each do |suffix|
                     if Services.const_defined_here?(srv_name = "#{name}#{suffix}")
-                        raise AlreadyDeclared, "it seems that the control loop services for #{name} have already been defined: found #{Services.const_get(srv_name)}"
+                        existing = Services.const_get(srv_name)
+                        raise AlreadyDeclared, "it seems that the control loop "\
+                            "services for #{name} have already been defined: found "\
+                            "#{existing}"
                     end
                 end
             end
-                                        
+
 
             # Declares standard services, parts of open-loop control systems.
             # The following services are defined, each time prefixed with
