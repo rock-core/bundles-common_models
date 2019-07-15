@@ -1,6 +1,11 @@
+# frozen_string_literal: true
+
 require 'common_models/models/services/joints_control_loop'
 require 'common_models/models/services/transformation'
 require 'common_models/models/devices/gazebo'
+
+## Double negation is needed to convert objects to boolean when writing to properties
+# rubocop:disable Style/DoubleNegation
 
 class OroGen::RockGazebo::WorldTask
     # Customizes the configuration step.
@@ -47,27 +52,32 @@ class OroGen::RockGazebo::ModelTask
     # @api private
     #
     # Common implementation of the two dynamic services (Link and Model)
-    def self.common_dynamic_link_export(context, name, port_name = name, options)
+    def self.common_dynamic_link_export(_context, name, port_name = name, options)
         port_name      = options.fetch(:port_name, port_name)
         frame_basename = options.fetch(:frame_basename, name)
         nans = [Float::NAN] * 9
         options[:cov_position]    ||= Types.base.Matrix3d.new(data: nans.dup)
         options[:cov_orientation] ||= Types.base.Matrix3d.new(data: nans.dup)
         options[:cov_velocity]    ||= Types.base.Matrix3d.new(data: nans.dup)
-        return port_name, frame_basename
+        [port_name, frame_basename]
     end
 
     # Declare a dynamic service for the link export feature
     #
     # One uses it by first require'ing
     dynamic_service CommonModels::Devices::Gazebo::Link, as: 'link_export' do
-        port_name, frame_basename = OroGen::RockGazebo::ModelTask.common_dynamic_link_export(self, self.name, options)
+        name = self.name
+        port_name, frame_basename =
+            OroGen::RockGazebo::ModelTask
+            .common_dynamic_link_export(self, name, options)
         driver_for CommonModels::Devices::Gazebo::Link,
-            "link_state_samples" => port_name,
-            'wrench_samples' => "#{port_name}_wrench",
-            'acceleration_samples' => "#{port_name}_acceleration"
+                   'link_state_samples' => port_name,
+                   'wrench_samples' => "#{port_name}_wrench",
+                   'acceleration_samples' => "#{port_name}_acceleration"
         component_model.transformer do
-            transform_output port_name, "#{frame_basename}_source" => "#{frame_basename}_target"
+            transform_output(
+                port_name, "#{frame_basename}_source" => "#{frame_basename}_target"
+            )
         end
     end
 
@@ -78,11 +88,12 @@ class OroGen::RockGazebo::ModelTask
     # at the same time.
     dynamic_service CommonModels::Devices::Gazebo::Model, as: 'submodel_export' do
         name = self.name
-        _, frame_basename = OroGen::RockGazebo::ModelTask.common_dynamic_link_export(
-            self, self.name, options.merge!(port_name: "#{name}_pose_samples"))
+        OroGen::RockGazebo::ModelTask.common_dynamic_link_export(
+            self, name, options.merge!(port_name: "#{name}_pose_samples")
+        )
         driver_for CommonModels::Devices::Gazebo::Model,
-            'joints_cmd'   => "#{name}_joints_cmd",
-            'joints_status'   => "#{name}_joints_samples"
+                   'joints_cmd' => "#{name}_joints_cmd",
+                   'joints_status' => "#{name}_joints_samples"
     end
 
     transformer do
@@ -93,25 +104,29 @@ class OroGen::RockGazebo::ModelTask
         # Find the task port that on which the service port is mapped
         task_port = link_srv.link_state_samples_port.to_component_port
         # And get the relevant transformer information
-        if transform = find_transform_of_port(task_port)
-            if !transform.from || !transform.to
-                model_transform = self.class.find_transform_of_port(task_port)
-                raise ArgumentError, "you did not select the frames for #{model_transform.from} or #{model_transform.to}, needed for #{link_srv.name}"
-            end
-            device = find_device_attached_to(link_srv)
-            Types.rock_gazebo.LinkExport.new(
-                port_name: task_port.name,
-                source_link: transform.from,
-                target_link: transform.to,
-                source_frame: transform.from,
-                target_frame: transform.to,
-                port_period: Time.at(device.period || 0),
-                cov_position: link_srv.model.dynamic_service_options[:cov_position],
-                cov_orientation: link_srv.model.dynamic_service_options[:cov_orientation],
-                cov_velocity: link_srv.model.dynamic_service_options[:cov_velocity])
-        else
+        unless (transform = find_transform_of_port(task_port))
             raise ArgumentError, "cannot find the transform information for #{task_port}"
         end
+
+        if !transform.from || !transform.to
+            model_transform = self.class.find_transform_of_port(task_port)
+            raise ArgumentError, 'you did not select the frames for '\
+                                    "#{model_transform.from} or #{model_transform.to}, "\
+                                    "needed for #{link_srv.name}"
+        end
+        device = find_device_attached_to(link_srv)
+
+        Types.rock_gazebo.LinkExport.new(
+            port_name: task_port.name,
+            source_link: transform.from,
+            target_link: transform.to,
+            source_frame: transform.from,
+            target_frame: transform.to,
+            port_period: Time.at(device.period || 0),
+            cov_position: link_srv.model.dynamic_service_options[:cov_position],
+            cov_orientation: link_srv.model.dynamic_service_options[:cov_orientation],
+            cov_velocity: link_srv.model.dynamic_service_options[:cov_velocity]
+        )
     end
 
     def create_joint_export(model_srv)
@@ -120,13 +135,14 @@ class OroGen::RockGazebo::ModelTask
         # Find the root model
         sdf_model      = device.sdf
         sdf_root_model = sdf_model
-        while sdf_root_model.parent && sdf_root_model.parent.kind_of?(SDF::Model)
+        while sdf_root_model&.parent.kind_of?(SDF::Model)
             sdf_root_model = sdf_root_model.parent
         end
 
         # The list of joint names
         joint_names = sdf_model.each_joint.map do |j|
-            next if j.type == "fixed"
+            next if j.type == 'fixed'
+
             j.full_name(root: sdf_root_model.parent)
         end.compact
 
@@ -144,15 +160,16 @@ class OroGen::RockGazebo::ModelTask
     def configure
         super
 
-        link_exports  = Array.new
-        joint_exports = Array.new
+        link_exports  = []
+        joint_exports = []
 
         # Setup the link export based on the instanciated link_export services
         # The source/target information is stored in the transformer
         each_required_dynamic_service do |srv|
             if srv.fullfills?(CommonModels::Devices::Gazebo::Link)
                 link_exports << create_link_export(
-                    srv.as(CommonModels::Devices::Gazebo::Link))
+                    srv.as(CommonModels::Devices::Gazebo::Link)
+                )
             end
             if srv.fullfills?(CommonModels::Devices::Gazebo::Model)
                 joint_exports << create_joint_export(srv)
@@ -168,9 +185,7 @@ class OroGen::RockGazebo::ModelTask
         def configure(*)
             super
             model.each_output_port do |p|
-                if !has_port?(p.name)
-                    create_output_port p.name, p.type
-                end
+                create_output_port(p.name, p.type) unless has_port?(p.name)
             end
         end
     end
@@ -249,12 +264,16 @@ class OroGen::RockGazebo::GPSTask
     def configure
         super
         properties.use_sim_time = !!Conf.gazebo.use_sim_time?
-        properties.latitude_origin  = Types.base.Angle.new(
-            rad: Conf.sdf.world.spherical_coordinates.latitude_deg * Math::PI / 180)
+        properties.latitude_origin = Types.base.Angle.new(
+            rad: Conf.sdf.world.spherical_coordinates.latitude_deg * Math::PI / 180
+        )
         properties.longitude_origin = Types.base.Angle.new(
-            rad: Conf.sdf.world.spherical_coordinates.longitude_deg * Math::PI / 180)
+            rad: Conf.sdf.world.spherical_coordinates.longitude_deg * Math::PI / 180
+        )
         properties.nwu_origin = Conf.sdf.global_origin
         properties.utm_zone   = Conf.sdf.utm_zone
         properties.utm_north  = !!Conf.sdf.utm_north?
     end
 end
+
+# rubocop:enable Style/DoubleNegation
