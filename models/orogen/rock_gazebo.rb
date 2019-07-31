@@ -214,6 +214,15 @@ class OroGen::RockGazebo::ThrusterTask
     end
 end
 
+class OroGen::RockGazebo::UnderwaterTask
+    driver_for CommonModels::Devices::Gazebo::Underwater, as: 'underwater'
+
+    def configure
+        super
+        properties.use_sim_time = !!Conf.gazebo.use_sim_time?
+    end
+end
+
 class OroGen::RockGazebo::CameraTask
     driver_for CommonModels::Devices::Gazebo::Camera, as: 'sensor'
 
