@@ -67,6 +67,14 @@ module OroGen
                     assert_equal 0.5, export.port_period.to_f
                 end
 
+                it 'converts the exported link export in an exact way' do
+                    @test_link_dev.period(1.501)
+                    task = syskit_stub_deploy_and_configure(@model_with_frames)
+                    exports = task.orocos_task.exported_links
+                    period = exports.first.port_period
+                    assert_equal 1, period.tv_sec
+                    assert_equal 501_000, period.tv_usec
+                end
             end
 
             describe 'submodel export' do
@@ -110,6 +118,28 @@ module OroGen
                     assert_equal ['m::nested::root2child'], export.joints
                     assert_equal 'm::', export.prefix
                     assert_equal 0.5, export.port_period.to_f
+                end
+
+                it 'converts the period to the closest integer sec/usec pair' do
+                    model = make_nested_model(<<-SDF_MODEL, period: 1.501)
+                        <model name="m">
+                            <model name="nested">
+                                <link name="root" />
+                                <link name="child" />
+                                <joint name="root2child" type="revolute">
+                                    <parent>root</parent>
+                                    <child>child</child>
+                                </joint>
+                            </model>
+                        </model>
+                    SDF_MODEL
+                    task = syskit_stub_deploy_and_configure(model)
+
+                    exports = task.orocos_task.exported_joints
+                    export = exports.first
+                    period = export.port_period
+                    assert_equal 1, period.tv_sec
+                    assert_equal 501_000, period.tv_usec
                 end
 
                 it 'ignores fixed joints' do

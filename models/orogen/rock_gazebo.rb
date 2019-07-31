@@ -100,6 +100,15 @@ class OroGen::RockGazebo::ModelTask
         transform_output 'pose_samples', 'model' => 'world'
     end
 
+    def period_to_time(period)
+        if period
+            period_us = (period * 1_000_000).round
+            Time.at(period_us / 1_000_000, period_us % 1_000_000, :usec)
+        else
+            Time.at(0)
+        end
+    end
+
     def create_link_export(link_srv)
         # Find the task port that on which the service port is mapped
         task_port = link_srv.link_state_samples_port.to_component_port
@@ -122,7 +131,7 @@ class OroGen::RockGazebo::ModelTask
             target_link: transform.to,
             source_frame: transform.from,
             target_frame: transform.to,
-            port_period: Time.at(device.period || 0),
+            port_period: period_to_time(device.period),
             cov_position: link_srv.model.dynamic_service_options[:cov_position],
             cov_orientation: link_srv.model.dynamic_service_options[:cov_orientation],
             cov_velocity: link_srv.model.dynamic_service_options[:cov_velocity]
@@ -154,7 +163,8 @@ class OroGen::RockGazebo::ModelTask
             port_name: "#{model_srv.name}_joints",
             joints: joint_names,
             prefix: prefix || '',
-            port_period: Time.at(device.period || 0))
+            port_period: period_to_time(device.period)
+        )
     end
 
     def configure
