@@ -101,12 +101,8 @@ class OroGen::RockGazebo::ModelTask
     end
 
     def period_to_time(period)
-        if period
-            period_us = (period * 1_000_000).round
-            Time.at(period_us / 1_000_000, period_us % 1_000_000, :usec)
-        else
-            Time.at(0)
-        end
+        period_us = ((period || 0) * 1_000_000).round
+        Time.at(period_us / 1_000_000, period_us % 1_000_000, :usec)
     end
 
     def create_link_export(link_srv)
