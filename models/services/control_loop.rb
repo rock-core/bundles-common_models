@@ -13,10 +13,10 @@ module CommonModels
             # Helper method for {.declare_open_loop} and {.declare}
             #
             # @raise [AlreadyDeclared]
-            def self.check_already_declared(name, *suffixes)
+            def self.check_already_declared(name, *suffixes, namespace: Services)
                 suffixes.each do |suffix|
-                    if Services.const_defined_here?(srv_name = "#{name}#{suffix}")
-                        existing = Services.const_get(srv_name)
+                    if namespace.const_defined_here?(srv_name = "#{name}#{suffix}")
+                        existing = namespace.const_get(srv_name)
                         raise AlreadyDeclared, "it seems that the control loop "\
                             "services for #{name} have already been defined: found "\
                             "#{existing}"
@@ -42,16 +42,19 @@ module CommonModels
             #   convey control commands, either as name or as a type object
             # @return [(Model<DataService>,Model<DataService>)] the controller,
             #   controlled system pair
-            def self.declare_open_loop(name, control_type)
-                check_already_declared(name, "OpenLoopControlledSystem", "OpenLoopController")
+            def self.declare_open_loop(name, control_type, namespace: Services)
+                check_already_declared(
+                    name, "OpenLoopControlledSystem", "OpenLoopController",
+                    namespace: namespace
+                )
 
                 open_loop_controlled_system =
-                    Services.data_service_type "#{name}OpenLoopControlledSystem" do
+                    namespace.data_service_type "#{name}OpenLoopControlledSystem" do
                         input_port "command_in", control_type
                         provides ControlledSystem
                     end
                 open_loop_controller =
-                    Services.data_service_type "#{name}OpenLoopController" do
+                    namespace.data_service_type "#{name}OpenLoopController" do
                         output_port "command_out", control_type
                         provides Controller
                     end
@@ -90,16 +93,19 @@ module CommonModels
             #   convey feedback information, either as name or as a type object
             # @return [(Model<DataService>,Model<DataService>)] the controller,
             #   controlled system pair
-            def self.declare(name, control_type, feedback_type)
-                check_already_declared(name, "ControlledSystem", "Controller")
+            def self.declare(name, control_type, feedback_type, namespace: Services)
+                check_already_declared(
+                    name, "ControlledSystem", "Controller",
+                    namespace: namespace
+                )
 
                 open_loop_controller, open_loop_controlled_system =
-                    declare_open_loop(name, control_type)
+                    declare_open_loop(name, control_type, namespace: namespace)
 
-                feedback_model = Services.data_service_type "#{name}Status" do
+                feedback_model = namespace.data_service_type "#{name}Status" do
                     output_port "status_out", feedback_type
                 end
-                controlled_system = Services.data_service_type "#{name}ControlledSystem" do
+                controlled_system = namespace.data_service_type "#{name}ControlledSystem" do
                     provides open_loop_controlled_system
                     provides feedback_model
                     provides ControlledSystem
@@ -109,7 +115,7 @@ module CommonModels
                         open_loop_controlled_system
                     end
                 end
-                controller = Services.data_service_type "#{name}Controller" do
+                controller = namespace.data_service_type "#{name}Controller" do
                     provides open_loop_controller
                     input_port "status_in", feedback_type
                     provides Controller
