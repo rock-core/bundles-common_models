@@ -12,5 +12,6 @@
     <depend package="tools/syskit" />
     <test_depend package="minitest" />
     <test_depend package="flexmock" />
+    <test_depend package="drivers/orogen/gps_base" />
 </package>
 
