@@ -4,12 +4,17 @@ require "common_models/models/devices/gps/mb500"
 require "common_models/models/devices/gps/generic"
 
 OroGen.extend_model OroGen.gps.BaseTask do
-    def configure
-        super
+    def update_properties
+        super if defined? super
 
         if Conf.utm_local_origin?
-            orocos_task.origin = Conf.utm_local_origin
+            properties.origin = Conf.utm_local_origin
         end
+    end
+
+    def configure
+        super
+        update_properties unless model.respond_to?(:use_update_properties?)
     end
 end
 

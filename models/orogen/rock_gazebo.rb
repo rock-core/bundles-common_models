@@ -20,6 +20,21 @@ Syskit.extend_model OroGen.rock_gazebo.WorldTask do
     # end
 end
 
+Syskit.extend_model OroGen.rock_gazebo.BaseTask do
+    def update_properties
+        super if defined? super
+
+        properties.use_sim_time = !!Conf.gazebo.use_sim_time?
+    end
+
+    def configure
+        super
+
+        # Compatibility with older Syskit versions
+        update_properties unless model.respond_to?(:use_update_properties?)
+    end
+end
+
 # Handling of a gazebo model on the CommonModels side
 #
 # ModelTasks are {CommonModels::Services::JointsControlledSystem}, that is they report
@@ -192,7 +207,7 @@ Syskit.extend_model OroGen.rock_gazebo.ModelTask do # rubocop:disable Metrics/Bl
         [sdf_model, sdf_root_model]
     end
 
-    def configure
+    def update_properties
         super
 
         link_exports  = []
@@ -218,7 +233,6 @@ Syskit.extend_model OroGen.rock_gazebo.ModelTask do # rubocop:disable Metrics/Bl
             end
         end
 
-        properties.use_sim_time = !!Conf.gazebo.use_sim_time?
         properties.exported_links  = link_exports
         properties.exported_joints = joint_exports
     end
@@ -243,11 +257,6 @@ Syskit.extend_model OroGen.rock_gazebo.LaserScanTask do
         frames "sensor"
         associate_ports_to_frame "laser_scan_samples", "sensor"
     end
-
-    def configure
-        super
-        properties.use_sim_time = !!Conf.gazebo.use_sim_time?
-    end
 end
 
 Syskit.extend_model OroGen.rock_gazebo.ImuTask do
@@ -258,29 +267,14 @@ Syskit.extend_model OroGen.rock_gazebo.ImuTask do
         associate_ports_to_transform "orientation_samples", "sensor" => "inertial"
         associate_ports_to_frame "imu_samples", "sensor"
     end
-
-    def configure
-        super
-        properties.use_sim_time = !!Conf.gazebo.use_sim_time?
-    end
 end
 
 Syskit.extend_model OroGen.rock_gazebo.ThrusterTask do
     driver_for CommonModels::Devices::Gazebo::Thruster, as: "thruster"
-
-    def configure
-        super
-        properties.use_sim_time = !!Conf.gazebo.use_sim_time?
-    end
 end
 
 Syskit.extend_model OroGen.rock_gazebo.UnderwaterTask do
     driver_for CommonModels::Devices::Gazebo::Underwater, as: "underwater"
-
-    def configure
-        super
-        properties.use_sim_time = !!Conf.gazebo.use_sim_time?
-    end
 end
 
 Syskit.extend_model OroGen.rock_gazebo.CameraTask do
@@ -289,11 +283,6 @@ Syskit.extend_model OroGen.rock_gazebo.CameraTask do
     transformer do
         frames "sensor"
         associate_ports_to_frame "frame", "sensor"
-    end
-
-    def configure
-        super
-        properties.use_sim_time = !!Conf.gazebo.use_sim_time?
     end
 end
 
@@ -306,9 +295,9 @@ Syskit.extend_model OroGen.rock_gazebo.GPSTask do
         associate_ports_to_transform "utm_samples", "gps" => "utm"
     end
 
-    def configure
+    def update_properties
         super
-        properties.use_sim_time = !!Conf.gazebo.use_sim_time?
+
         properties.latitude_origin = Types.base.Angle.new(
             rad: Conf.sdf.world.spherical_coordinates.latitude_deg * Math::PI / 180
         )
