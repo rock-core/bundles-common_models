@@ -38,11 +38,6 @@ module OroGen::Mars
 
     class Task
         forward physics_error: :failed
-
-        def configure
-            # orocos_task.enable_gui = true
-            super
-        end
     end
 
     class AuvMotion

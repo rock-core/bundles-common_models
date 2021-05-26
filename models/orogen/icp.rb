@@ -5,6 +5,7 @@ require "common_models/models/blueprints/pose"
 class OroGen::Icp::Task
     find_output_port("pose_samples")
         .triggered_once_per_update
+
     worstcase_processing_time 1
 
     # Additional configuration for the transformer's automatic configuration
@@ -14,9 +15,15 @@ class OroGen::Icp::Task
         associate_frame_to_ports "laser", "scan_samples"
     end
 
+    def update_properties
+        super if defined? super
+
+        properties.environment_path = Conf.pointcloud_map_path
+    end
+
     def configure
         super
-        orogen_task.environment_path = Conf.pointcloud_map_path
+        update_properties unless model.respond_to?(:use_update_properties?)
     end
 end
 

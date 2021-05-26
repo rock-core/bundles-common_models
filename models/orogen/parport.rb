@@ -16,8 +16,13 @@ end
 class OroGen::Parport::Task
     driver_for Dev::Bus::Parport, as: "driver"
 
+    def update_properties
+        super
+    end
+
     def configure
         super
+
         bus_name = self.parport_name
         each_attached_device do |dev|
             pin = dev.parport_pin

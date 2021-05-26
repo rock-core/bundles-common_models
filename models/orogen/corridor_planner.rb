@@ -13,10 +13,10 @@ class OroGen::CorridorPlanner::Task
     def configure
         super
         if Conf.traversability_map_file?
-            orocos_task.map_path = Conf.traversability_map_file
+            properties.map_path = Conf.traversability_map_file
         end
-        orocos_task.terrain_classes = Conf.traversability_classes_file
-        orocos_task.strong_edge_filter do |p|
+        properties.terrain_classes = Conf.traversability_classes_file
+        properties.strong_edge_filter do |p|
             p.env_path = Conf.environment_map_path
         end
     end
