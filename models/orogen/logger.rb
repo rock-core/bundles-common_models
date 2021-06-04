@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
-Syskit.extend_model OroGen.logger.Logger do # rubocop:disable Metrics/BlockLength
+# OroGen.logger already exists, we can't access the model for logger::Logger
+# using the method syntax
+logger_m = OroGen.syskit_model_by_orogen_name("logger::Logger")
+
+Syskit.extend_model logger_m do # rubocop:disable Metrics/BlockLength
     provides Syskit::LoggerService, as: "logger_service"
 
     # Customizes the configuration step.
