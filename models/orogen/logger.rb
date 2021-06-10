@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
+require "syskit/network_generation/logger"
+
 # OroGen.logger already exists, we can't access the model for logger::Logger
 # using the method syntax
 logger_m = OroGen.syskit_model_by_orogen_name("logger::Logger")
 
 Syskit.extend_model logger_m do # rubocop:disable Metrics/BlockLength
-    provides Syskit::LoggerService, as: "logger_service"
+    provides Syskit::LoggerService
 
     # Customizes the configuration step.
     #
@@ -20,42 +22,9 @@ Syskit.extend_model logger_m do # rubocop:disable Metrics/BlockLength
 
     def rotate_log
         previous_file = orocos_task.current_file
-        new_file = orocos_task.file
-        unless orocos_task.auto_timestamp_files
-            previous_file, new_file = get_file_with_incremented_number(
-                previous_file, new_file
-            )
-        end
-        orocos_task.file = new_file
-        previous_file
-    end
 
-    def get_file_with_incremented_number(previous_file, new_file)
-        new_file, log_number = separate_name_and_number(new_file)
-        if log_number.empty?
-            log_number = "_1"
-            previous_file = add_number_suffix(previous_file, log_number)
-        end
-        new_file << increment_number(log_number)
-        new_file << ".log" if previous_file.match?(/.log$/)
-        [previous_file, new_file]
-    end
+        setup_default_logger(orocos_task)
 
-    def separate_name_and_number(file_name)
-        file_name = file_name.partition(/.log$/).first
-        file_name.partition(/_\d+$/)
-    end
-
-    def add_number_suffix(file_name, number)
-        if file_name.match?(/.log$/)
-            file_name.partition(/.log$/).first + number + ".log"
-        else
-            file_name + number
-        end
-    end
-
-    def increment_number(number)
-        number = number[1, number.length].to_i + 1
-        "_" + number.to_s
+        [previous_file]
     end
 end
