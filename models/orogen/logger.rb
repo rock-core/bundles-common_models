@@ -6,7 +6,7 @@ require "syskit/network_generation/logger"
 # using the method syntax
 logger_m = OroGen.syskit_model_by_orogen_name("logger::Logger")
 
-Syskit.extend_model logger_m do # rubocop:disable Metrics/BlockLength
+Syskit.extend_model logger_m do
     provides Syskit::LoggerService
 
     # Customizes the configuration step.
@@ -20,8 +20,12 @@ Syskit.extend_model logger_m do # rubocop:disable Metrics/BlockLength
     #     super
     # end
 
+    def update_properties
+        super
+    end
+
     def rotate_log
-        previous_file = orocos_task.current_file
+        previous_file = orocos_task.property("file").read
 
         setup_default_logger(orocos_task)
 
