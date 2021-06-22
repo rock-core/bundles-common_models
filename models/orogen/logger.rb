@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "syskit/network_generation/logger"
-
 # OroGen.logger already exists, we can't access the model for logger::Logger
 # using the method syntax
 logger_m = OroGen.syskit_model_by_orogen_name("logger::Logger")
@@ -27,7 +25,9 @@ Syskit.extend_model logger_m do
     def rotate_log
         previous_file = orocos_task.property("file").read
 
-        setup_default_logger(orocos_task)
+        Syskit::NetworkGeneration::LoggerConfigurationSupport.setup_default_logger(
+            orocos_task
+        )
 
         [previous_file]
     end
