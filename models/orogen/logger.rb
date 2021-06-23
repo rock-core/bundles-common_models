@@ -23,11 +23,9 @@ Syskit.extend_model logger_m do
     end
 
     def rotate_log
-        previous_file = orocos_task.property("file").read
+        previous_file = properties.file
 
-        Syskit::NetworkGeneration::LoggerConfigurationSupport.setup_default_logger(
-            orocos_task
-        )
+        Syskit::NetworkGeneration::LoggerConfigurationSupport.setup_default_logger(self)
 
         [previous_file]
     end

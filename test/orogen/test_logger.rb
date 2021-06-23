@@ -17,40 +17,40 @@ module OroGen
         describe "log rotation" do
             it "increments index in log file name after rotation" do
                 task = syskit_stub_deploy_configure_and_start
-                task.orocos_task.property("overwrite_existing_files").write(false)
-                task.orocos_task.property("auto_timestamp_files").write(false)
+                task.properties.overwrite_existing_files = false
+                task.properties.auto_timestamp_files = false
 
-                assert_empty(task.orocos_task.property("file").read)
+                assert_empty(task.properties.file)
 
                 task.rotate_log
 
                 assert_equal(
-                    "#{task.orocos_task.basename}.0.log",
-                    task.orocos_task.property("file").read
+                    "#{task.orocos_name}.0.log",
+                    task.properties.file
                 )
 
                 task.rotate_log
 
                 assert_equal(
-                    "#{task.orocos_task.basename}.1.log",
-                    task.orocos_task.property("file").read
+                    "#{task.orocos_name}.1.log",
+                    task.properties.file
                 )
             end
 
             it "returns previous file after rotation" do
                 task = syskit_stub_deploy_configure_and_start
-                task.orocos_task.property("overwrite_existing_files").write(false)
-                task.orocos_task.property("auto_timestamp_files").write(false)
+                task.properties.overwrite_existing_files = false
+                task.properties.auto_timestamp_files = false
 
                 assert_equal [""], task.rotate_log
 
                 assert_equal(
-                    ["#{task.orocos_task.basename}.0.log"],
+                    ["#{task.orocos_name}.0.log"],
                     task.rotate_log
                 )
 
                 assert_equal(
-                    ["#{task.orocos_task.basename}.1.log"],
+                    ["#{task.orocos_name}.1.log"],
                     task.rotate_log
                 )
             end
