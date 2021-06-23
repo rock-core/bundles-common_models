@@ -17,10 +17,8 @@ module OroGen
         describe "log rotation" do
             it "increments index in log file name after rotation" do
                 task = syskit_stub_deploy_configure_and_start
-                task.properties.overwrite_existing_files = false
-                task.properties.auto_timestamp_files = false
 
-                assert_empty(task.properties.file)
+                assert_empty task.properties.file
 
                 task.rotate_log
 
@@ -39,10 +37,8 @@ module OroGen
 
             it "returns previous file after rotation" do
                 task = syskit_stub_deploy_configure_and_start
-                task.properties.overwrite_existing_files = false
-                task.properties.auto_timestamp_files = false
 
-                assert_equal [""], task.rotate_log
+                assert_empty task.rotate_log
 
                 assert_equal(
                     ["#{task.orocos_name}.0.log"],

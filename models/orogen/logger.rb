@@ -20,6 +20,8 @@ Syskit.extend_model logger_m do
 
     def update_properties
         super
+        properties.overwrite_existing_files = false
+        properties.auto_timestamp_files = false
     end
 
     def rotate_log
@@ -27,6 +29,6 @@ Syskit.extend_model logger_m do
 
         Syskit::NetworkGeneration::LoggerConfigurationSupport.setup_default_logger(self)
 
-        [previous_file]
+        previous_file.empty? ? [] : [previous_file]
     end
 end
