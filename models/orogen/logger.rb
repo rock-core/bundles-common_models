@@ -24,6 +24,10 @@ Syskit.extend_model logger_m do
         properties.auto_timestamp_files = false
     end
 
+    def log_server_name
+        execution_agent.arguments[:on]
+    end
+
     def rotate_log
         previous_file = properties.file
 
