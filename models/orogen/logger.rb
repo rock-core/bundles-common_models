@@ -17,6 +17,14 @@ Syskit.extend_model Syskit::RockLogger do
     @logfile_indexes = {}
 
     provides Syskit::LoggerService
+    include Syskit::NetworkGeneration::LoggerConfigurationSupport
+
+    stub do
+        def createLoggingPort(port_name, port_type, _metadata) # rubocop:disable Naming/MethodName
+            create_input_port(port_name, port_type)
+            true
+        end
+    end
 
     # True if this logger is its deployment's default logger
     #
