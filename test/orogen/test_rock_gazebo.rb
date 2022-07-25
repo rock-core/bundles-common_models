@@ -38,8 +38,7 @@ module OroGen
 
         describe "link export" do
             before do
-                model = OroGen.rock_gazebo.ModelTask.specialize
-                model.require_dynamic_service(
+                model = OroGen.rock_gazebo.ModelTask.with_dynamic_service(
                     "link_export", as: "test", port_name: "src2tgt"
                 )
                 robot_model = Syskit::Robot::RobotDefinition.new
@@ -83,8 +82,7 @@ module OroGen
 
         describe "joint export" do
             before do
-                model = OroGen.rock_gazebo.ModelTask.specialize
-                model.require_dynamic_service(
+                model = OroGen.rock_gazebo.ModelTask.with_dynamic_service(
                     "joint_export", as: "test", joint_names: %w[j1 j2]
                 )
                 robot_model = Syskit::Robot::RobotDefinition.new
@@ -94,8 +92,7 @@ module OroGen
             end
 
             it "configures a joint export based on the dynamic service info" do
-                model = OroGen.rock_gazebo.ModelTask.specialize
-                model.require_dynamic_service(
+                model = OroGen.rock_gazebo.ModelTask.with_dynamic_service(
                     "joint_export", as: "test", joint_names: %w[j1 j2]
                 )
                 robot_model = Syskit::Robot::RobotDefinition.new
@@ -117,8 +114,7 @@ module OroGen
 
             it "sets up the joint exports period based on the instanciated "\
                 "joint_export services" do
-                model = OroGen.rock_gazebo.ModelTask.specialize
-                model.require_dynamic_service(
+                model = OroGen.rock_gazebo.ModelTask.with_dynamic_service(
                     "joint_export", as: "test", joint_names: %w[j1 j2]
                 )
                 robot_model = Syskit::Robot::RobotDefinition.new
@@ -135,8 +131,7 @@ module OroGen
             end
 
             it "converts the exported link period in an exact way" do
-                model = OroGen.rock_gazebo.ModelTask.specialize
-                model.require_dynamic_service(
+                model = OroGen.rock_gazebo.ModelTask.with_dynamic_service(
                     "joint_export", as: "test", joint_names: %w[j1 j2]
                 )
                 robot_model = Syskit::Robot::RobotDefinition.new
@@ -188,9 +183,8 @@ module OroGen
             end
 
             it "validates the size of the position_offsets argument" do
-                model = OroGen.rock_gazebo.ModelTask.specialize
                 assert_raises(ArgumentError) do
-                    model.require_dynamic_service(
+                    OroGen.rock_gazebo.ModelTask.with_dynamic_service(
                         "joint_export", as: "test", joint_names: %w[j1 j2],
                                         position_offsets: [0]
                     )
@@ -198,8 +192,9 @@ module OroGen
             end
 
             def deploy_and_configure_dynamic_service(**kw)
-                model = OroGen.rock_gazebo.ModelTask.specialize
-                model.require_dynamic_service("joint_export", as: "test", **kw)
+                model = OroGen.rock_gazebo.ModelTask.with_dynamic_service(
+                    "joint_export", as: "test", **kw
+                )
 
                 robot_model = Syskit::Robot::RobotDefinition.new
                 dev = robot_model.device(
@@ -212,8 +207,9 @@ module OroGen
 
         describe "submodel export" do
             def make_nested_model(sdf, period: 0.5) # rubocop:disable Metrics/AbcSize
-                model = OroGen.rock_gazebo.ModelTask.specialize
-                model.require_dynamic_service "submodel_export", as: "test"
+                model = OroGen.rock_gazebo.ModelTask.with_dynamic_service(
+                    "submodel_export", as: "test"
+                )
                 robot_model = Syskit::Robot::RobotDefinition.new
                 root_model = SDF::Model.from_string(sdf)
                 test_submodel_dev =
@@ -299,8 +295,7 @@ module OroGen
         end
 
         it "uses a default period of zero" do
-            model = OroGen.rock_gazebo.ModelTask.specialize
-            model.require_dynamic_service(
+            model = OroGen.rock_gazebo.ModelTask.with_dynamic_service(
                 "link_export", as: "test", port_name: "src2tgt"
             )
             robot_model = Syskit::Robot::RobotDefinition.new
