@@ -35,6 +35,10 @@ module CommonModels
             # The writing thread
             attr_reader :write_thread
 
+            def update_properties
+                super
+            end
+
             # Sets the {#values} argument
             def values=(setpoint)
                 setpoint = setpoint.transform_keys(&:to_s)
