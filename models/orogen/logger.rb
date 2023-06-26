@@ -26,6 +26,12 @@ Syskit.extend_model Syskit::RockLogger do
         end
     end
 
+    # A file basename to be used for auto-rotation of logs
+    #
+    # If nil, logs won't be rotated or indexed. Default loggers are managed
+    # automatically regardless of this argument's value
+    argument :file_basename, default: nil
+
     # True if this logger is its deployment's default logger
     #
     # In this case, it will set itself up using the deployment's logging
@@ -40,16 +46,29 @@ Syskit.extend_model Syskit::RockLogger do
     end
 
     event :start do |context|
-        properties.file = default_logger_next_file_path if default_logger?
+        if (path = resolve_next_file_path)
+            properties.file = path
+        end
 
         super(context)
+    end
+
+    def resolve_next_file_path
+        basename =
+            if default_logger?
+                default_logger_file_name
+            else
+                file_basename
+            end
+
+        next_file_path(basename) if basename
     end
 
     def default_logger_file_name
         orocos_name.sub(/_[L|l]ogger/, "")
     end
 
-    def default_logger_next_index(log_file_name)
+    def path_next_index(log_file_name)
         Syskit::RockLogger.logfile_indexes[log_file_name] =
             Syskit::RockLogger.logfile_indexes.fetch(log_file_name, -1) + 1
     end
@@ -59,9 +78,8 @@ Syskit.extend_model Syskit::RockLogger do
     end
 
     # Sets up the default logger of this process
-    def default_logger_next_file_path
-        log_file_name = default_logger_file_name
-        index = default_logger_next_index(log_file_name)
+    def next_file_path(log_file_name)
+        index = path_next_index(log_file_name)
 
         log_file_path = "#{log_file_name}.#{index}.log"
 
@@ -77,10 +95,10 @@ Syskit.extend_model Syskit::RockLogger do
     end
 
     def rotate_log
-        return [] unless default_logger?
+        return [] unless (path = resolve_next_file_path)
 
         previous_file = properties.file
-        properties.file = default_logger_next_file_path
+        properties.file = path
         [previous_file]
     end
 end
