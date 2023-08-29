@@ -8,6 +8,7 @@ module CommonModels
             device_type "Thruster" do
                 provides Entity
                 provides Services::Thruster
+                provides Services::ThrusterController
             end
         end
     end
