@@ -31,6 +31,7 @@ require "common_models/models/services/raw_io"
 require "common_models/models/services/gazebo"
 
 require "common_models/models/services/laser_scan"
+require "common_models/models/services/depth_map"
 
 require "common_models/models/services/global_position"
 
