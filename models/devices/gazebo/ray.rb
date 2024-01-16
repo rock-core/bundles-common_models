@@ -2,6 +2,7 @@
 
 require "common_models/models/devices/gazebo/entity"
 require "common_models/models/services/laser_scan"
+require "common_models/models/services/depth_map"
 
 module CommonModels
     module Devices
@@ -10,6 +11,7 @@ module CommonModels
             device_type "Ray" do
                 provides Entity
                 provides CommonModels::Services::LaserScan
+                provides CommonModels::Services::DepthMap
             end
         end
     end
