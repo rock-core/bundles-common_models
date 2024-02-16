@@ -55,6 +55,9 @@ module CommonModels
                 @write_thread_exit = exit_event = Concurrent::Event.new
                 period = self.period
                 @write_thread = Thread.new do
+                    # Disable exception reporting. Uncaught exceptions are reported
+                    # through the write_thread_error event
+                    Thread.current.report_on_exception = false
                     until exit_event.set?
                         values.each do |port_name, value|
                             orocos_task.port(port_name).write(value)
