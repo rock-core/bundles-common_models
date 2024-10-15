@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "bundler/gem_tasks"
 require "yard"
 require "yard/rake/yardoc_task"
 require "roby/app/rake"
@@ -28,9 +27,10 @@ Roby::App::Rake::TestTask.new do |t|
     end
 end
 
-if Roby::App::Rake.define_rubocop_if_enabled
-    task "test" => "rubocop"
+task "rubocop" do
+    raise "rubocop failed" unless system(ENV["RUBOCOP_CMD"] || "rubocop")
 end
+task "test" => "rubocop" if ENV["RUBOCOP"] != "0"
 
 YARD::Rake::YardocTask.new do |yard|
     yard.files = ["models/**/*.rb", "lib/**/*.rb"]
