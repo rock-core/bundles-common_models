@@ -38,9 +38,7 @@ class OroGen::Icp::Relocalization < Syskit::Composition
 
     laser_range_finder_child.scans_port.connect_to icp_child.scan_samples_port
 
-    attr_reader :result
-    attr_reader :position
-    attr_reader :yaw_bias
+    attr_reader :result, :position, :yaw_bias
 
     argument :initial_pose, default: from_state.pose
 

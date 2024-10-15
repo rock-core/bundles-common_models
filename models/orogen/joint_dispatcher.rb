@@ -34,7 +34,7 @@ module OroGen::JointDispatcher
 
     # Check if the given ports are referring to a command -- based on the given name
     def self.command_mapping?(input, output)
-        (input.include?("command") || input.include?("cmd") || output.include?("command") || output.include?("cmd"))
+        input.include?("command") || input.include?("cmd") || output.include?("command") || output.include?("cmd")
     end
 
     # Setup a composition programatically, so that it creates placeholder services for

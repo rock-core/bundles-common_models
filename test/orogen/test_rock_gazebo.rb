@@ -206,7 +206,7 @@ module OroGen
         end
 
         describe "submodel export" do
-            def make_nested_model(sdf, period: 0.5) # rubocop:disable Metrics/AbcSize
+            def make_nested_model(sdf, period: 0.5)
                 model = OroGen.rock_gazebo.ModelTask.with_dynamic_service(
                     "submodel_export", as: "test"
                 )

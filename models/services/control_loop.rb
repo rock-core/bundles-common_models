@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require "common_models/models/services/controller.rb"
-require "common_models/models/services/controlled_system.rb"
+require "common_models/models/services/controller"
+require "common_models/models/services/controlled_system"
 
 module CommonModels
     module Services

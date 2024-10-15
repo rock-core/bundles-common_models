@@ -44,11 +44,6 @@ module OroGen::Simulation
     class Mars
         forward physics_error: :failed
 
-        def configure
-            # orocos_task.enable_gui = true
-            super
-        end
-
         def set_node_position(name, posX, posY, posZ, rotX, rotY, rotZ)
             opt = Types::Simulation::Positions.new
             opt.nodename = name

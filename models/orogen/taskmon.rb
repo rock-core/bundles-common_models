@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 class OroGen::Taskmon::Task
-    attr_reader :query_tasks
-    attr_reader :query_deployments
+    attr_reader :query_tasks, :query_deployments
 
     def initialize(options = {})
         super

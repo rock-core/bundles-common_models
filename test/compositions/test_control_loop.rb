@@ -11,6 +11,7 @@ module CommonModels
 
             describe "open loop" do
                 attr_reader :command_type, :controller_srv, :controlled_system_srv, :model
+
                 before do
                     @command_type = stub_type "/Command"
                     Services::ControlLoop.declare_open_loop "Test", command_type
@@ -53,6 +54,7 @@ module CommonModels
             end
             describe "closed loop" do
                 attr_reader :command_type, :feedback_type, :controller_srv, :controlled_system_srv, :model
+
                 before do
                     @command_type = stub_type "/Command"
                     @feedback_type = stub_type "/Feedback"

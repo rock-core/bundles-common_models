@@ -7,6 +7,7 @@ module CommonModels
         describe WaitForPosition do
             describe "#acceptable?" do
                 attr_reader :cov_position
+
                 before do
                     @cov_position = Array.new(9, Base.unknown)
                 end

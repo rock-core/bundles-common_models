@@ -7,6 +7,7 @@ module CommonModels
     module Compositions
         describe ReachPose do
             attr_reader :pose, :rbs, :reach_pose
+
             before do
                 @pose = Types.base.Pose.new
                 pose.position = Eigen::Vector3.new(1, 2, 3)

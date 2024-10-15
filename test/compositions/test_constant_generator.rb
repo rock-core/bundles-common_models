@@ -45,6 +45,7 @@ module CommonModels
 
             describe "the task termination" do
                 attr_reader :task
+
                 before do
                     @task = syskit_stub_deploy_configure_and_start(generator_m.with_arguments(values: Hash["out" => 10]))
                 end

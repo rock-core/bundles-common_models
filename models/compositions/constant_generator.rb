@@ -35,7 +35,7 @@ module CommonModels
             # The writing thread
             attr_reader :write_thread
 
-            def update_properties
+            def update_properties # rubocop:disable Lint/UselessMethodDefinition
                 super
             end
 

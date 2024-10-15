@@ -7,6 +7,7 @@ module CommonModels
     module Compositions
         describe MaintainPose do
             attr_reader :pose, :rbs, :maintain_pose
+
             before do
                 @pose = Types.base.Pose.new
                 pose.position = Eigen::Vector3.new(1, 2, 3)
