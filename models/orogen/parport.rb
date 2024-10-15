@@ -16,7 +16,7 @@ end
 class OroGen::Parport::Task
     driver_for Dev::Bus::Parport, as: "driver"
 
-    def update_properties
+    def update_properties # rubocop:disable Lint/UselessMethodDefinition
         super
     end
 

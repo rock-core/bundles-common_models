@@ -5,7 +5,6 @@ require "common_models/models/services/transformation"
 require "common_models/models/devices/gazebo"
 
 ## Double negation is needed to convert objects to boolean when writing to properties
-# rubocop:disable Style/DoubleNegation
 
 Syskit.extend_model OroGen.rock_gazebo.WorldTask do
     # Customizes the configuration step.
@@ -99,12 +98,10 @@ Syskit.extend_model OroGen.rock_gazebo.ModelTask do # rubocop:disable Metrics/Bl
     # Declare a dynamic service that provides an interface to a set of joints
     dynamic_service CommonModels::Devices::Gazebo::Joint, as: "joint_export" do
         offsets = (options[:position_offsets] ||= [])
-        unless offsets.empty?
-            if offsets.size != options[:joint_names].size
-                raise ArgumentError,
-                      "the position_offsets array should either be empty "\
-                      "or of the same size than joint_names"
-            end
+        if !offsets.empty? && (offsets.size != options[:joint_names].size)
+            raise ArgumentError,
+                  "the position_offsets array should either be empty " \
+                  "or of the same size than joint_names"
         end
 
         name = self.name
@@ -144,9 +141,9 @@ Syskit.extend_model OroGen.rock_gazebo.ModelTask do # rubocop:disable Metrics/Bl
 
         if !transform.from || !transform.to
             model_transform = self.class.find_transform_of_port(task_port)
-            raise ArgumentError, "you did not select the frames for "\
-                                    "#{model_transform.from} or #{model_transform.to}, "\
-                                    "needed for #{link_srv.name}"
+            raise ArgumentError, "you did not select the frames for " \
+                                 "#{model_transform.from} or #{model_transform.to}, " \
+                                 "needed for #{link_srv.name}"
         end
         device = find_device_attached_to(link_srv)
 
@@ -309,5 +306,3 @@ Syskit.extend_model OroGen.rock_gazebo.GPSTask do
         properties.utm_north  = !!Conf.sdf.utm_north?
     end
 end
-
-# rubocop:enable Style/DoubleNegation

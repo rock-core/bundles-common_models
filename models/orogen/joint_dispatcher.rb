@@ -34,7 +34,7 @@ module OroGen::JointDispatcher
 
     # Check if the given ports are referring to a command -- based on the given name
     def self.command_mapping?(input, output)
-        (input.include?("command") || input.include?("cmd") || output.include?("command") || output.include?("cmd"))
+        input.include?("command") || input.include?("cmd") || output.include?("command") || output.include?("cmd")
     end
 
     # Setup a composition programatically, so that it creates placeholder services for
@@ -64,20 +64,20 @@ module OroGen::JointDispatcher
             overload("dispatcher", task)
                 .with_conf(*conf_names)
 
-            status_mappings = dispatches.map { |b| if JointDispatcher.status_mapping?(b[0], b[1]) then b end }.compact
-            command_mappings = dispatches.map { |b| if JointDispatcher.command_mapping?(b[0], b[1]) then b end }.compact
+            status_mappings = dispatches.select { |b| JointDispatcher.status_mapping?(b[0], b[1]) }
+            command_mappings = dispatches.select { |b| JointDispatcher.command_mapping?(b[0], b[1]) }
 
             status_mappings.each do |input, _, srv|
                 child = add Base::JointsStatusSrv, as: input
                 child.connect_to dispatcher_child.find_data_service(srv.name), type: :buffer, size: 100
             end
 
-            status_mappings.map { |_, output, _| output }.to_set.each do |output|
+            status_mappings.to_set { |_, output, _| output }.each do |output|
                 export dispatcher_child.find_output_port(output)
                 provides Base::JointsStatusSrv, :as => output, "status_samples" => output
             end
 
-            command_mappings.map { |input, _, _| input }.to_set.each do |input|
+            command_mappings.to_set { |input, _, _| input }.each do |input|
                 export dispatcher_child.find_input_port(input)
                 provides Base::JointsCommandConsumerSrv, :as => input, "cmd_in" => input
             end
@@ -103,14 +103,14 @@ module OroGen::JointDispatcher
                     provides controlled_system_type, as: "#{subsystem_prefix}_controlled_system",
                                                      command_in: command_in, status_out: status_out
                 else
-                    raise ArgumentError, "Can't map subsystem #{subsystem_prefix} to a controlled system type."\
-                          "There must be _exactly_ one command input port and one status port "\
-                          "that match the subsystem prefix. We have #{n_command_input_ports} "\
-                          "command input ports and #{n_status_output_ports} status output ports "\
-                          "with the prefix #{subsystem_prefix}."\
-                          "You provided: "\
-                          "     controlled_system_type_map: #{controlled_system_type_map}"\
-                          "     dispatch configuration: #{dispatches}"
+                    raise ArgumentError, "Can't map subsystem #{subsystem_prefix} to a controlled system type." \
+                                         "There must be _exactly_ one command input port and one status port " \
+                                         "that match the subsystem prefix. We have #{n_command_input_ports} " \
+                                         "command input ports and #{n_status_output_ports} status output ports " \
+                                         "with the prefix #{subsystem_prefix}." \
+                                         "You provided:      " \
+                                         "controlled_system_type_map: #{controlled_system_type_map}     " \
+                                         "dispatch configuration: #{dispatches}"
                 end
             end
         end
@@ -140,7 +140,7 @@ module OroGen::JointDispatcher
             end
 
             # Export each output port and define it as a provider for Base::JointsStatusSrv
-            dispatches.map { |_, output, _| output }.to_set.each do |output|
+            dispatches.to_set { |_, output, _| output }.each do |output|
                 export dispatcher_child.find_output_port(output)
                 provides Base::JointsStatusSrv, "status_samples" => output, :as => output
             end

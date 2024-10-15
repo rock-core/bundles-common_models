@@ -10,7 +10,7 @@ Syskit.extend_model OroGen.canbus.Task do # rubocop:disable Metrics/BlockLength
     # input port should be created
     provides CommonModels::Devices::Bus::CAN::BusInSrv, as: "to_bus"
 
-    def update_properties
+    def update_properties # rubocop:disable Lint/UselessMethodDefinition
         super
     end
 

@@ -35,8 +35,8 @@ class Plot
         @plots[sym][:value][0] << value[0]
         @plots[sym][:value][1] << value[1]
         if error
-            @plots[sym][:error][0] << 2 * error[0]
-            @plots[sym][:error][1] << 2 * error[1]
+            @plots[sym][:error][0] << (2 * error[0])
+            @plots[sym][:error][1] << (2 * error[1])
         end
     end
 

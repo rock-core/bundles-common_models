@@ -19,6 +19,7 @@ module CommonModels
 
             describe "open-loop control" do
                 attr_reader :command_type
+
                 before do
                     @command_type = stub_type "/Command"
                     ControlLoop.declare_open_loop "Test", command_type
@@ -37,6 +38,7 @@ module CommonModels
 
             describe "closed-loop control" do
                 attr_reader :command_type, :status_type
+
                 before do
                     @command_type = stub_type "/Command"
                     @status_type = stub_type "/Status"

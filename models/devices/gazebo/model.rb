@@ -12,6 +12,13 @@ module CommonModels
             device_type "Model" do
                 provides Entity
 
+                extend_device_configuration do
+                    # The RootModel that supports this model
+                    def gazebo_root_model
+                        to_instance_requirements.arguments[:model_dev]
+                    end
+                end
+
                 # Rename status_out and command_in to something that talks about
                 # joints
                 input_port "joints_cmd", "/base/samples/Joints"

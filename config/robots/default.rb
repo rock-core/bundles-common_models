@@ -21,10 +21,9 @@ end
 
 def require_all_except(*path, except: [])
     Dir.enum_for(:glob, File.join(*path, "*")).sort.each do |file|
-        if File.exist?(file) && File.extname(file) == ".rb"
-            unless except.include?(File.basename(file))
-                require file
-            end
+        if File.exist?(file) && File.extname(file) == ".rb" &&
+           !except.include?(File.basename(file))
+            require file
         end
     end
 end

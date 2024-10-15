@@ -7,6 +7,7 @@ module CommonModels
     module Compositions
         describe MaintainPose do
             attr_reader :pose, :rbs, :maintain_pose
+
             before do
                 @pose = Types.base.Pose.new
                 pose.position = Eigen::Vector3.new(1, 2, 3)
@@ -22,8 +23,8 @@ module CommonModels
             end
 
             def assert_pose_in_event_equal(rbs, actual)
-                expected = Hash[x: rbs.position.x, y: rbs.position.y, z: rbs.position.z,
-                                yaw: rbs.orientation.yaw, pitch: rbs.orientation.pitch, roll: rbs.orientation.roll]
+                expected = { x: rbs.position.x, y: rbs.position.y, z: rbs.position.z,
+                             yaw: rbs.orientation.yaw, pitch: rbs.orientation.pitch, roll: rbs.orientation.roll }
                 expected.each_key do |k|
                     assert_in_delta expected[k], actual[k], 1e-6, "expected and actual values differ on #{k}: #{expected[k]} and #{actual[k]}"
                 end

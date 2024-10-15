@@ -7,6 +7,7 @@ module CommonModels
         describe PosePredicate do
             describe "#within_tolerance?" do
                 attr_reader :pose, :sample, :reach_pose
+
                 before do
                     @pose = Types.base.Pose.new(
                         position: Eigen::Vector3.Zero,
