@@ -100,7 +100,7 @@ Syskit.extend_model OroGen.rock_gazebo.ModelTask do # rubocop:disable Metrics/Bl
         offsets = (options[:position_offsets] ||= [])
         if !offsets.empty? && (offsets.size != options[:joint_names].size)
             raise ArgumentError,
-                  "the position_offsets array should either be empty "\
+                  "the position_offsets array should either be empty " \
                   "or of the same size than joint_names"
         end
 
@@ -141,9 +141,9 @@ Syskit.extend_model OroGen.rock_gazebo.ModelTask do # rubocop:disable Metrics/Bl
 
         if !transform.from || !transform.to
             model_transform = self.class.find_transform_of_port(task_port)
-            raise ArgumentError, "you did not select the frames for "\
-                                    "#{model_transform.from} or #{model_transform.to}, "\
-                                    "needed for #{link_srv.name}"
+            raise ArgumentError, "you did not select the frames for " \
+                                 "#{model_transform.from} or #{model_transform.to}, " \
+                                 "needed for #{link_srv.name}"
         end
         device = find_device_attached_to(link_srv)
 

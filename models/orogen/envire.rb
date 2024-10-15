@@ -8,11 +8,11 @@ class OroGen::Envire::SynchronizationTransmitter
     provides CommonModels::MapGen::OneShotSrv, as: "one_shot"
 
     on :start do |event|
-        if !File.directory?(initial_map)
-            raise ArgumentError, "Envire::SynchronizationTransmitter -- cannot load initial environment. File '#{initial_map}' does not exist"
-        else
+        if File.directory?(initial_map)
             Robot.info "Envire::SynchronizationTransmitter -- loading initial environment from '#{initial_map}'"
             orocos_task.loadEnvironment(initial_map)
+        else
+            raise ArgumentError, "Envire::SynchronizationTransmitter -- cannot load initial environment. File '#{initial_map}' does not exist"
         end
     end
 

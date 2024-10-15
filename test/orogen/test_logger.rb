@@ -72,7 +72,7 @@ module OroGen
             end
         end
 
-        it "does not rotate loggers that are not a deployment's default logger, "\
+        it "does not rotate loggers that are not a deployment's default logger, " \
            "neither have a file_basename defined" do
             logger = syskit_stub_deploy_configure_and_start(Syskit::RockLogger)
             logger.properties.file = "test.log"

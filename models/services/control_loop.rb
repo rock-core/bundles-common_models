@@ -19,9 +19,9 @@ module CommonModels
                 suffixes.each do |suffix|
                     if namespace.const_defined_here?(srv_name = "#{name}#{suffix}")
                         existing = namespace.const_get(srv_name)
-                        raise AlreadyDeclared, "it seems that the control loop "\
-                            "services for #{name} have already been defined: found "\
-                            "#{existing}"
+                        raise AlreadyDeclared, "it seems that the control loop " \
+                                               "services for #{name} have already been defined: found " \
+                                               "#{existing}"
                     end
                 end
             end

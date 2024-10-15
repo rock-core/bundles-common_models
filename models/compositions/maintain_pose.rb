@@ -33,8 +33,8 @@ module CommonModels
                         )
                         unless within_tolerance?(sample)
                             exceeds_tolerance_event.emit(
-                                Hash[expected: rbs_to_hash(self.pose),
-                                     actual: rbs_to_hash(@last_pose)]
+                                { expected: rbs_to_hash(self.pose),
+                                  actual: rbs_to_hash(@last_pose) }
                             )
                         end
                     end

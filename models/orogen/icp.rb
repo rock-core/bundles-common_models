@@ -66,11 +66,11 @@ class OroGen::Icp::Relocalization < Syskit::Composition
     on :done do |event|
         unless initial_estimate?
             pose = @result_reader.read
-            if !pose
-                emit :failed_initial_estimate
-            else
+            if pose
                 @pose_sample = pose
                 emit :initial_estimate
+            else
+                emit :failed_initial_estimate
             end
         end
     end

@@ -53,8 +53,8 @@ module OroGen
                     .transformer { frames "src_frame", "tgt_frame" }
             end
 
-            it "sets up the link export based on the instanciated "\
-                "link_export services" do
+            it "sets up the link export based on the instanciated " \
+               "link_export services" do
                 @test_link_dev.period(0.5)
                 task = syskit_stub_deploy_and_configure(@model_with_frames)
 
@@ -112,8 +112,8 @@ module OroGen
                 assert_equal 0, export.ignore_joint_names
             end
 
-            it "sets up the joint exports period based on the instanciated "\
-                "joint_export services" do
+            it "sets up the joint exports period based on the instanciated " \
+               "joint_export services" do
                 model = OroGen.rock_gazebo.ModelTask.with_dynamic_service(
                     "joint_export", as: "test", joint_names: %w[j1 j2]
                 )
@@ -407,8 +407,8 @@ module OroGen
             assert task.orocos_task.use_sim_time
         end
 
-        it "sets up the GPSTask latitude_origin and longitude_origin from "\
-            "the spherical coordinates info in the SDF" do
+        it "sets up the GPSTask latitude_origin and longitude_origin from " \
+           "the spherical coordinates info in the SDF" do
             task = syskit_stub_deploy_and_configure OroGen.rock_gazebo.GPSTask
             assert_in_delta 48.8580 * Math::PI / 180,
                             task.orocos_task.latitude_origin.rad, 1e-6
