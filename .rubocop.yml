@@ -10,6 +10,10 @@ inherit_mode:
 
 AllCops:
   TargetRubyVersion: "2.5"
+  NewCops: enable
+
+Lint/EmptyBlock:
+    Enabled: false
 
 Style/MultilineMemoization:
     EnforcedStyle: braces

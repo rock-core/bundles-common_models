@@ -49,8 +49,8 @@ module CommonModels
             end
 
             def rbs_to_hash(rbs)
-                position    = Hash[%i[x y z].zip(rbs.position.to_a)]
-                orientation = Hash[%i[yaw pitch roll].zip(rbs.orientation.to_euler.to_a)]
+                position    = %i[x y z].zip(rbs.position.to_a).to_h
+                orientation = %i[yaw pitch roll].zip(rbs.orientation.to_euler.to_a).to_h
                 position.merge(orientation)
             end
 

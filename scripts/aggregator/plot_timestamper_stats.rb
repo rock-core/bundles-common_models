@@ -38,10 +38,10 @@ base_time = nil
 last_stats = nil
 stream.samples.each do |_, _, stats|
     unless base_time
-        if stats.time_raw.to_f != 0
-            base_time = stats.time_raw
-        else
+        if stats.time_raw.to_f == 0
             next
+        else
+            base_time = stats.time_raw
         end
     end
 
