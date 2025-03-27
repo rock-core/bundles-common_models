@@ -10,6 +10,10 @@ module OroGen
             use_deployment("rock_logger").first
         end
 
+        before do
+            Syskit::RockLogger.reset_log_indexes
+        end
+
         it { is_configurable }
 
         describe "handling of file on default loggers" do
@@ -17,10 +21,6 @@ module OroGen
                 @deployment_m = Syskit::Deployment.new_submodel(name: "deployment") do
                     add_default_logger
                 end
-            end
-
-            after do
-                Syskit::RockLogger.reset_log_indexes
             end
 
             it "initializes the file property, following the default logger pattern" do
