@@ -19,7 +19,7 @@ module OroGen
         describe "handling of file on default loggers" do
             before do
                 @deployment_m = Syskit::Deployment.new_submodel(name: "deployment") do
-                    add_default_logger
+                    task "deployment_Logger", Syskit::RockLogger
                 end
             end
 
