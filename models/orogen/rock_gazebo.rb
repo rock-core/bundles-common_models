@@ -252,7 +252,7 @@ Syskit.extend_model OroGen.rock_gazebo.LaserScanTask do
 
     transformer do
         frames "sensor"
-        associate_ports_to_frame "laser_scan_samples", "sensor"
+        associate_ports_to_frame "laser_scan_samples", "depth_map_samples", "sensor"
     end
 end
 
