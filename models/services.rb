@@ -26,7 +26,9 @@ require "common_models/models/services/motion2d"
 
 require "common_models/models/services/raw_input_command"
 
+require "common_models/models/services/raw_input"
 require "common_models/models/services/raw_io"
+require "common_models/models/services/raw_output"
 
 require "common_models/models/services/gazebo"
 

@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
-import_types_from "iodrivers_base"
+require "common_models/models/services/raw_input"
+require "common_models/models/services/raw_output"
 
 module CommonModels
     module Services
         # Representation of a raw I/O stream
         data_service_type "RawIO" do
-            input_port "raw_in", "/iodrivers_base/RawPacket"
-            output_port "raw_out", "/iodrivers_base/RawPacket"
+            provides RawInput
+            provides RawOutput
         end
     end
 end

@@ -41,6 +41,8 @@ Robot.requires do
 
     unless Roby.app.default_loader.has_typekit?("iodrivers_base")
         excluded_services << "raw_io.rb"
+        excluded_services << "raw_input.rb"
+        excluded_services << "raw_output.rb"
     end
 
     unless Roby.app.default_loader.has_project?("trajectory_follower")
