@@ -12,6 +12,11 @@ module CommonModels
             device_type "Link" do
                 provides Entity
 
+                extend_device_configuration do
+                    dsl_attribute :sdf_from_link
+                    dsl_attribute :sdf_to_link
+                end
+
                 output_port "link_state_samples", "/base/samples/RigidBodyState"
 
                 provides Services::PoseAndTwist,
