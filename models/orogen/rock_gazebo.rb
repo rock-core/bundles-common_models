@@ -146,11 +146,13 @@ Syskit.extend_model OroGen.rock_gazebo.ModelTask do # rubocop:disable Metrics/Bl
                                  "needed for #{link_srv.name}"
         end
         device = find_device_attached_to(link_srv)
+        device.sdf_from_link # SDF::Link object for the "from" frame
+        device.sdf_to_link # SDF::Link object for the "to" frame
 
         Types.rock_gazebo.LinkExport.new(
             port_name: task_port.name,
-            source_link: transform.from,
-            target_link: transform.to,
+            source_link: device.sdf_from_link.full_name,
+            target_link: device.sdf_to_link.full_name,
             source_frame: transform.from,
             target_frame: transform.to,
             port_period: period_to_time(device.period),
