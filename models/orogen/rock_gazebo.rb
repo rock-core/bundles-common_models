@@ -131,7 +131,13 @@ Syskit.extend_model OroGen.rock_gazebo.ModelTask do # rubocop:disable Metrics/Bl
         Time.at(period_us / 1_000_000, period_us % 1_000_000, :usec)
     end
 
-    def create_link_export(link_srv)
+    def normalize_world_frame(link_sdf, world_frame)
+        return world_frame if link_sdf == "world"
+
+        link_sdf
+    end
+
+    def create_link_export(link_srv, world_frame)
         # Find the task port that on which the service port is mapped
         task_port = link_srv.link_state_samples_port.to_component_port
         # And get the relevant transformer information
@@ -146,13 +152,15 @@ Syskit.extend_model OroGen.rock_gazebo.ModelTask do # rubocop:disable Metrics/Bl
                                  "needed for #{link_srv.name}"
         end
         device = find_device_attached_to(link_srv)
-        device.sdf_from_link # SDF::Link object for the "from" frame
-        device.sdf_to_link # SDF::Link object for the "to" frame
+
+        from_link =
+            normalize_world_frame(device.sdf_from_link, world_frame)
+        to_link = normalize_world_frame(device.sdf_to_link, world_frame)
 
         Types.rock_gazebo.LinkExport.new(
             port_name: task_port.name,
-            source_link: device.sdf_from_link.full_name,
-            target_link: device.sdf_to_link.full_name,
+            source_link: from_link,
+            target_link: to_link,
             source_frame: transform.from,
             target_frame: transform.to,
             port_period: period_to_time(device.period),
@@ -217,7 +225,7 @@ Syskit.extend_model OroGen.rock_gazebo.ModelTask do # rubocop:disable Metrics/Bl
         each_required_dynamic_service do |srv|
             if srv.fullfills?(CommonModels::Devices::Gazebo::Link)
                 link_exports << create_link_export(
-                    srv.as(CommonModels::Devices::Gazebo::Link)
+                    srv.as(CommonModels::Devices::Gazebo::Link), properties.world_frame
                 )
             end
             if srv.fullfills?(CommonModels::Devices::Gazebo::Joint)
