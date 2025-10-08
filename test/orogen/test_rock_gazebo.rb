@@ -77,8 +77,8 @@ module OroGen
                 assert_equal "src2tgt", export.port_name
                 assert_equal "src_frame", export.source_frame
                 assert_equal "tgt_frame", export.target_frame
-                assert_equal "m::root", export.source_link
-                assert_equal "m::child", export.target_link
+                assert_equal "root", export.source_link
+                assert_equal "child", export.target_link
                 assert_equal 0.5, export.port_period.to_f
             end
 
@@ -93,7 +93,7 @@ module OroGen
                 assert_equal 1, exports.size
 
                 export = exports.first
-                assert_equal "m::root", export.source_link
+                assert_equal "root", export.source_link
                 assert_equal "narnia", export.target_link
             end
 

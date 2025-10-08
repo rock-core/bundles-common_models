@@ -131,10 +131,17 @@ Syskit.extend_model OroGen.rock_gazebo.ModelTask do # rubocop:disable Metrics/Bl
         Time.at(period_us / 1_000_000, period_us % 1_000_000, :usec)
     end
 
-    def normalize_world_frame(link_sdf, world_frame)
-        return world_frame if link_sdf == "world"
+    # @api private
+    #
+    # Resolve the link name that should be passed to the ModelTasko
+    #
+    # It either uses direct name information passed through the device, or
+    # if not set, uses the frame name (which was the old method)
+    def resolve_link_name(explicit_link_name, frame_name, world_frame)
+        return frame_name unless explicit_link_name
+        return world_frame if explicit_link_name == "world"
 
-        link_sdf
+        explicit_link_name
     end
 
     def create_link_export(link_srv, world_frame)
@@ -153,9 +160,8 @@ Syskit.extend_model OroGen.rock_gazebo.ModelTask do # rubocop:disable Metrics/Bl
         end
         device = find_device_attached_to(link_srv)
 
-        from_link =
-            normalize_world_frame(device.sdf_from_link, world_frame)
-        to_link = normalize_world_frame(device.sdf_to_link, world_frame)
+        from_link = resolve_link_name(device.sdf_from_link, transform.from, world_frame)
+        to_link = resolve_link_name(device.sdf_to_link, transform.to, world_frame)
 
         Types.rock_gazebo.LinkExport.new(
             port_name: task_port.name,
