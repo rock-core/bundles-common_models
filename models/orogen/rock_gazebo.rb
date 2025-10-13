@@ -131,7 +131,20 @@ Syskit.extend_model OroGen.rock_gazebo.ModelTask do # rubocop:disable Metrics/Bl
         Time.at(period_us / 1_000_000, period_us % 1_000_000, :usec)
     end
 
-    def create_link_export(link_srv)
+    # @api private
+    #
+    # Resolve the link name that should be passed to the ModelTasko
+    #
+    # It either uses direct name information passed through the device, or
+    # if not set, uses the frame name (which was the old method)
+    def resolve_link_name(explicit_link_name, frame_name, world_frame)
+        return frame_name unless explicit_link_name
+        return world_frame if explicit_link_name == "world"
+
+        explicit_link_name
+    end
+
+    def create_link_export(link_srv, world_frame)
         # Find the task port that on which the service port is mapped
         task_port = link_srv.link_state_samples_port.to_component_port
         # And get the relevant transformer information
@@ -147,10 +160,13 @@ Syskit.extend_model OroGen.rock_gazebo.ModelTask do # rubocop:disable Metrics/Bl
         end
         device = find_device_attached_to(link_srv)
 
+        from_link = resolve_link_name(device.sdf_from_link, transform.from, world_frame)
+        to_link = resolve_link_name(device.sdf_to_link, transform.to, world_frame)
+
         Types.rock_gazebo.LinkExport.new(
             port_name: task_port.name,
-            source_link: transform.from,
-            target_link: transform.to,
+            source_link: from_link,
+            target_link: to_link,
             source_frame: transform.from,
             target_frame: transform.to,
             port_period: period_to_time(device.period),
@@ -215,7 +231,7 @@ Syskit.extend_model OroGen.rock_gazebo.ModelTask do # rubocop:disable Metrics/Bl
         each_required_dynamic_service do |srv|
             if srv.fullfills?(CommonModels::Devices::Gazebo::Link)
                 link_exports << create_link_export(
-                    srv.as(CommonModels::Devices::Gazebo::Link)
+                    srv.as(CommonModels::Devices::Gazebo::Link), properties.world_frame
                 )
             end
             if srv.fullfills?(CommonModels::Devices::Gazebo::Joint)

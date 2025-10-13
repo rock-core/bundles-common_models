@@ -38,6 +38,14 @@ module OroGen
 
         describe "link export" do
             before do
+                root_model = SDF::Model.from_string(
+                    <<-SDF_MODEL
+                    <model name="m">
+                        <link name="root" />
+                        <link name="child" />
+                    </model>
+                SDF_MODEL
+                )
                 model = OroGen.rock_gazebo.ModelTask.with_dynamic_service(
                     "link_export", as: "test", port_name: "src2tgt"
                 )
@@ -45,6 +53,10 @@ module OroGen
                 @test_link_dev = robot_model.device(
                     CommonModels::Devices::Gazebo::Link, as: "test", using: model
                 )
+                @test_link_dev.sdf(root_model)
+                @test_link_dev.sdf_from_link("root")
+                @test_link_dev.sdf_to_link("child")
+
                 @model_with_frames =
                     model
                     .use_frames("test_source" => "src_frame",
@@ -65,9 +77,24 @@ module OroGen
                 assert_equal "src2tgt", export.port_name
                 assert_equal "src_frame", export.source_frame
                 assert_equal "tgt_frame", export.target_frame
-                assert_equal "src_frame", export.source_link
-                assert_equal "tgt_frame", export.target_link
+                assert_equal "root", export.source_link
+                assert_equal "child", export.target_link
                 assert_equal 0.5, export.port_period.to_f
+            end
+
+            it "correctly fills out the world frame with the current property" \
+               "link_export services" do
+                @test_link_dev.sdf_to_link("world")
+                task = syskit_stub_deploy_and_configure(
+                    @model_with_frames.with_arguments(conf: { "world_frame" => "narnia" })
+                )
+
+                exports = task.orocos_task.exported_links
+                assert_equal 1, exports.size
+
+                export = exports.first
+                assert_equal "root", export.source_link
+                assert_equal "narnia", export.target_link
             end
 
             it "converts the exported link export in an exact way" do
@@ -92,14 +119,7 @@ module OroGen
             end
 
             it "configures a joint export based on the dynamic service info" do
-                model = OroGen.rock_gazebo.ModelTask.with_dynamic_service(
-                    "joint_export", as: "test", joint_names: %w[j1 j2]
-                )
-                robot_model = Syskit::Robot::RobotDefinition.new
-                test_joint_dev = robot_model.device(
-                    CommonModels::Devices::Gazebo::Joint, as: "test", using: model
-                )
-                task = syskit_stub_deploy_and_configure(test_joint_dev)
+                task = syskit_stub_deploy_and_configure(@test_joint_dev)
 
                 exports = task.properties.exported_joints
                 assert_equal 1, exports.size
@@ -114,15 +134,8 @@ module OroGen
 
             it "sets up the joint exports period based on the instanciated " \
                "joint_export services" do
-                model = OroGen.rock_gazebo.ModelTask.with_dynamic_service(
-                    "joint_export", as: "test", joint_names: %w[j1 j2]
-                )
-                robot_model = Syskit::Robot::RobotDefinition.new
-                test_joint_dev = robot_model.device(
-                    CommonModels::Devices::Gazebo::Joint, as: "test", using: model
-                )
-                test_joint_dev.period(0.5)
-                task = syskit_stub_deploy_and_configure(test_joint_dev)
+                @test_joint_dev.period(0.5)
+                task = syskit_stub_deploy_and_configure(@test_joint_dev)
 
                 exports = task.properties.exported_joints
                 assert_equal 1, exports.size
@@ -295,6 +308,14 @@ module OroGen
         end
 
         it "uses a default period of zero" do
+            root_model = SDF::Model.from_string(
+                <<-SDF_MODEL
+                <model name="m">
+                    <link name="root" />
+                    <link name="child" />
+                </model>
+            SDF_MODEL
+            )
             model = OroGen.rock_gazebo.ModelTask.with_dynamic_service(
                 "link_export", as: "test", port_name: "src2tgt"
             )
@@ -302,6 +323,9 @@ module OroGen
             test_link_dev = robot_model.device(
                 CommonModels::Devices::Gazebo::Link, as: "test", using: model
             )
+            test_link_dev.sdf(root_model)
+            test_link_dev.sdf_from_link("root")
+            test_link_dev.sdf_to_link("child")
 
             model_with_frames =
                 model
