@@ -6,7 +6,9 @@ module CommonModels
     module Devices
         module GPS
             device_type "Generic" do
-                provides Services::Position
+                output_port "nwu_position_samples", "/base/samples/RigidBodyState"
+                provides CommonModels::Services::Position,
+                         "position_samples" => "nwu_position_samples"
             end
         end
     end
