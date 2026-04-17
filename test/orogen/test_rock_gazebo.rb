@@ -37,6 +37,8 @@ module OroGen
         end
 
         describe "link export" do
+            attr_reader :model
+
             before do
                 root_model = SDF::Model.from_string(
                     <<-SDF_MODEL
@@ -46,7 +48,7 @@ module OroGen
                     </model>
                 SDF_MODEL
                 )
-                model = OroGen.rock_gazebo.ModelTask.with_dynamic_service(
+                @model = model = OroGen.rock_gazebo.ModelTask.with_dynamic_service(
                     "link_export", as: "test", port_name: "src2tgt"
                 )
                 robot_model = Syskit::Robot::RobotDefinition.new
@@ -84,9 +86,10 @@ module OroGen
 
             it "correctly fills out the world frame with the current property" \
                "link_export services" do
+                syskit_stub_conf(model, "test", data: { "world_frame" => "narnia" })
                 @test_link_dev.sdf_to_link("world")
                 task = syskit_stub_deploy_and_configure(
-                    @model_with_frames.with_arguments(conf: { "world_frame" => "narnia" })
+                    @model_with_frames.with_arguments(conf: ["test"])
                 )
 
                 exports = task.orocos_task.exported_links
