@@ -5,12 +5,6 @@ require "test/helpers"
 using_task_library "rock_gazebo"
 
 module OroGen
-    describe rock_gazebo.WorldTask do
-        run_simulated
-
-        it { is_configurable }
-    end
-
     describe rock_gazebo.ModelTask do
         run_simulated
 
@@ -379,17 +373,26 @@ module OroGen
         end
     end
 
-    describe rock_gazebo.UnderwaterTask do
-        it "sets use_sim_time to false if Conf.gazebo.use_sim_time is false" do
-            Conf.gazebo.use_sim_time = false
-            task = syskit_stub_deploy_and_configure(OroGen.rock_gazebo.UnderwaterTask)
-            refute task.orocos_task.use_sim_time
+    # Unavailable on gz-new
+    if rock_gazebo.respond_to?(:WorldTask)
+        describe rock_gazebo.WorldTask do
+            run_simulated
+
+            it { is_configurable }
         end
 
-        it "sets use_sim_time to true if Conf.gazebo.use_sim_time is true" do
-            Conf.gazebo.use_sim_time = true
-            task = syskit_stub_deploy_and_configure(OroGen.rock_gazebo.UnderwaterTask)
-            assert task.orocos_task.use_sim_time
+        describe rock_gazebo.UnderwaterTask do
+            it "sets use_sim_time to false if Conf.gazebo.use_sim_time is false" do
+                Conf.gazebo.use_sim_time = false
+                task = syskit_stub_deploy_and_configure(OroGen.rock_gazebo.UnderwaterTask)
+                refute task.orocos_task.use_sim_time
+            end
+
+            it "sets use_sim_time to true if Conf.gazebo.use_sim_time is true" do
+                Conf.gazebo.use_sim_time = true
+                task = syskit_stub_deploy_and_configure(OroGen.rock_gazebo.UnderwaterTask)
+                assert task.orocos_task.use_sim_time
+            end
         end
     end
 
