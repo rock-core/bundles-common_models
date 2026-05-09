@@ -6,19 +6,6 @@ require "common_models/models/devices/gazebo"
 
 ## Double negation is needed to convert objects to boolean when writing to properties
 
-Syskit.extend_model OroGen.rock_gazebo.WorldTask do
-    # Customizes the configuration step.
-    #
-    # The orocos task is available from orocos_task
-    #
-    # The call to super here applies the configuration on the orocos task. If
-    # you need to override properties, do it afterwards
-    #
-    # def configure
-    #     super
-    # end
-end
-
 Syskit.extend_model OroGen.rock_gazebo.BaseTask do
     def update_properties
         super if defined? super
@@ -282,14 +269,6 @@ Syskit.extend_model OroGen.rock_gazebo.ImuTask do
     end
 end
 
-Syskit.extend_model OroGen.rock_gazebo.ThrusterTask do
-    driver_for CommonModels::Devices::Gazebo::Thruster, as: "thruster"
-end
-
-Syskit.extend_model OroGen.rock_gazebo.UnderwaterTask do
-    driver_for CommonModels::Devices::Gazebo::Underwater, as: "underwater"
-end
-
 Syskit.extend_model OroGen.rock_gazebo.CameraTask do
     driver_for CommonModels::Devices::Gazebo::Camera, as: "sensor"
 
@@ -320,5 +299,29 @@ Syskit.extend_model OroGen.rock_gazebo.GPSTask do
         properties.nwu_origin = Conf.sdf.global_origin
         properties.utm_zone   = Conf.sdf.utm_zone
         properties.utm_north  = !!Conf.sdf.utm_north?
+    end
+end
+
+# Unavailable in gazebo-new
+if OroGen.rock_gazebo.respond_to?(:WorldTask)
+    Syskit.extend_model OroGen.rock_gazebo.WorldTask do
+        # Customizes the configuration step.
+        #
+        # The orocos task is available from orocos_task
+        #
+        # The call to super here applies the configuration on the orocos task. If
+        # you need to override properties, do it afterwards
+        #
+        # def configure
+        #     super
+        # end
+    end
+
+    Syskit.extend_model OroGen.rock_gazebo.ThrusterTask do
+        driver_for CommonModels::Devices::Gazebo::Thruster, as: "thruster"
+    end
+
+    Syskit.extend_model OroGen.rock_gazebo.UnderwaterTask do
+        driver_for CommonModels::Devices::Gazebo::Underwater, as: "underwater"
     end
 end
