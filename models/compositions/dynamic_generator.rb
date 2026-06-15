@@ -24,15 +24,20 @@ module CommonModels
         #   add_mission(mission)
         #   mission.values = { "out" => 42 }
         class DynamicGenerator < DataGenerator
+            def initialize(**keys)
+                @values = Concurrent::AtomicReference.new
+
+                super
+            end
+
             def update_properties # rubocop:disable Lint/UselessMethodDefinition
                 super
             end
 
-            event :start do |context|
-                @values = Concurrent::AtomicReference.new
-                @values.set(arguments[:values])
+            def initialize_copy(old)
+                super
 
-                super(context)
+                @values = Concurrent::AtomicReference.new(values)
             end
 
             # Sets the {#values} argument
@@ -46,11 +51,8 @@ module CommonModels
                               "#{port_name} is not a known port of #{self}."
                     end
                 end
-                if @values
-                    @values.set(setpoint)
-                else
-                    arguments[:values] = setpoint
-                end
+
+                @values.set(setpoint)
             end
 
             def values
