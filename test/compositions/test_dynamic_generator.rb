@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "common_models/models/compositions/dynamic_generator"
+require "common_models/models/services/raw_output"
 
 module CommonModels
     module Compositions
@@ -61,6 +62,30 @@ module CommonModels
                 generator.values = { "out" => 42 }
                 sample = expect_execution.to { have_one_new_sample generator.out_port }
                 assert_in_delta 42, sample, 0.01
+            end
+
+            it "does not overwrite arguments" do
+                raw_packet_gen_m = DynamicGenerator.for("iodrivers_base/RawPacket")
+                # why does #new_submodel does not work with DynamicGenerator?
+                raw_packet_gen_m.class_eval do
+                    argument :initial_value
+
+                    def initial_value=(value)
+                        v = value.dup
+                        v.time = Time.now
+                        self.values = { "out" => v }
+                    end
+                end
+
+                raw = Types.iodrivers_base.RawPacket.new(
+                    time: Time.now
+                )
+                t0 = raw.time
+                task = syskit_stub_and_deploy(
+                    raw_packet_gen_m.with_arguments(initial_value: raw)
+                )
+
+                assert_equal t0, task.initial_value.time
             end
 
             describe "the task termination" do
