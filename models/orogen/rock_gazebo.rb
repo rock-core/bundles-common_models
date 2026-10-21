@@ -198,7 +198,9 @@ Syskit.extend_model OroGen.rock_gazebo.ModelTask do # rubocop:disable Metrics/Bl
             prefix: prefix || ""
         )
         if joint_export.respond_to?(:control_modes)
-            joint_export.control_modes = control_modes
+            joint_export.control_modes = Array(control_modes).map do |val|
+                Typelib.from_ruby(val, joint_export.class[:control_modes].deference)
+            end
         end
         joint_export
     end
