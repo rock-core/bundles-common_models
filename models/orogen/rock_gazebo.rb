@@ -179,7 +179,8 @@ Syskit.extend_model OroGen.rock_gazebo.ModelTask do # rubocop:disable Metrics/Bl
 
     def create_joint_export(
         srv, joint_names,
-        ignore_joint_names: false, position_offsets: []
+        ignore_joint_names: false, position_offsets: [],
+        control_modes: []
     )
         device = find_device_attached_to(srv)
         sdf_model, sdf_root_model = resolve_sdf_model_and_root_from_device(device)
@@ -188,7 +189,7 @@ Syskit.extend_model OroGen.rock_gazebo.ModelTask do # rubocop:disable Metrics/Bl
             prefix = "#{sdf_model.parent.full_name(root: sdf_root_model.parent)}::"
         end
 
-        Types.rock_gazebo.JointExport.new(
+        joint_export = Types.rock_gazebo.JointExport.new(
             ignore_joint_names: ignore_joint_names,
             joints: joint_names,
             port_name: "#{srv.name}_joints",
@@ -196,6 +197,10 @@ Syskit.extend_model OroGen.rock_gazebo.ModelTask do # rubocop:disable Metrics/Bl
             position_offsets: position_offsets,
             prefix: prefix || ""
         )
+        if joint_export.respond_to?(:control_modes)
+            joint_export.control_modes = control_modes
+        end
+        joint_export
     end
 
     def resolve_sdf_model_and_root_from_device(device)
@@ -225,7 +230,8 @@ Syskit.extend_model OroGen.rock_gazebo.ModelTask do # rubocop:disable Metrics/Bl
                 joint_exports << create_joint_export(
                     srv, srv.model.dynamic_service_options[:joint_names],
                     **srv.model.dynamic_service_options
-                         .slice(:ignore_joint_names, :position_offsets)
+                         .slice(:ignore_joint_names, :position_offsets,
+                                :control_modes)
                 )
             end
             if srv.fullfills?(CommonModels::Devices::Gazebo::Model)
