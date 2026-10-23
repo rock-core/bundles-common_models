@@ -53,6 +53,37 @@ Syskit.extend_model Syskit::RockLogger do
         super(context)
     end
 
+    # Enumerate the streams that are currently being logged by this logger
+    def each_stream
+        return enum_for(:each_stream) unless block_given?
+
+        each_input_port do |port|
+            yield(port.name, port.type) if port.dynamic?
+        end
+    end
+
+    # @api private
+    #
+    # Return a description of the logged streams that is compatible with
+    #  {Syskit::RobyApp::LogIndex}'s API
+    #
+    # @return [Array<(String,String)>]
+    def log_index_stream_description
+        each_stream.map { |name, type| [name, type.name] }
+    end
+
+    on :start do |event|
+        if log_index?
+            Roby.app.syskit_register_new_log(
+                event.time, properties.file, log_index_stream_description
+            )
+        end
+    end
+
+    on :stop do |event|
+        Roby.app.syskit_register_finished_log(event.time, properties.file) if log_index?
+    end
+
     def resolve_next_file_path
         basename =
             if default_logger?
@@ -94,11 +125,28 @@ Syskit.extend_model Syskit::RockLogger do
         execution_agent.arguments[:on]
     end
 
+    def log_index?
+        return @log_index unless @log_index.nil?
+
+        @log_index = Roby.app.respond_to?(:syskit_register_new_log)
+    end
+
     def rotate_log
         return [] unless (path = resolve_next_file_path)
 
         previous_file = properties.file
         properties.file = path
+
+        if log_index?
+            time = Time.now
+            Roby.app.syskit_register_finished_log(time, previous_file)
+            Roby.app.syskit_register_new_log(time, path, log_index_stream_description)
+        end
+
         [previous_file]
+    end
+
+    def current_files
+        [properties.file]
     end
 end
