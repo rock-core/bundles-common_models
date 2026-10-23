@@ -129,6 +129,25 @@ module OroGen
                 assert_equal 0, export.ignore_joint_names
             end
 
+            it "allows passing control modes as strings" do
+                model = OroGen.rock_gazebo.ModelTask.with_dynamic_service(
+                    "joint_export", as: "test", joint_names: %w[j1 j2],
+                                    control_modes: ["POSITION"]
+                )
+                robot_model = Syskit::Robot::RobotDefinition.new
+                dev = robot_model.device(
+                    CommonModels::Devices::Gazebo::Joint, as: "test", using: model
+                )
+                task = syskit_stub_deploy_and_configure(dev)
+                if task.properties.exported_joints.first.respond_to?(:control_modes)
+                    # Outside of gz-new, We checked that the API is common but
+                    # control_modes is ignored, that's expected
+                    actual_modes =
+                        task.properties.exported_joints.first.control_modes.to_a
+                    assert_equal [:POSITION], actual_modes
+                end
+            end
+
             it "sets up the joint exports period based on the instanciated " \
                "joint_export services" do
                 @test_joint_dev.period(0.5)
