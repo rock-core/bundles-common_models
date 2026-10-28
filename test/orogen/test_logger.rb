@@ -152,7 +152,9 @@ module OroGen
                 @logger = deployment.task "deployment_Logger"
                 @logger.default_logger = true
 
-                @log_index = Roby.app.syskit_create_log_index
+                @app = Roby::Application.new
+                @log_index = @app.syskit_create_log_index
+                @logger.app = @app
 
                 base_port = Syskit::NetworkGeneration::LoggerConfigurationSupport
                             .logger_dynamic_port_of(Syskit::RockLogger)
@@ -163,8 +165,8 @@ module OroGen
 
             after do
                 if @log_index
-                    @log_index.dispose
-                    FileUtils.rm_f Roby.app.syskit_log_index_path
+                    @app.syskit_close_log_index
+                    FileUtils.rm_f @app.syskit_log_index_path
                 end
             end
 
