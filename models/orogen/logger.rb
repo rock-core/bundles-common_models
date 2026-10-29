@@ -38,6 +38,17 @@ Syskit.extend_model Syskit::RockLogger do
     # configuration
     attr_predicate :default_logger?, true
 
+    # The Roby app, defaults to Roby.app
+    #
+    # Usually overriden in tests
+    attr_accessor :app
+
+    def initialize(**)
+        super
+
+        @app = Roby.app
+    end
+
     def update_properties
         super
 
@@ -74,14 +85,14 @@ Syskit.extend_model Syskit::RockLogger do
 
     on :start do |event|
         if log_index?
-            Roby.app.syskit_register_new_log(
+            @app.syskit_register_new_log(
                 event.time, properties.file, log_index_stream_description
             )
         end
     end
 
     on :stop do |event|
-        Roby.app.syskit_register_finished_log(event.time, properties.file) if log_index?
+        @app.syskit_register_finished_log(event.time, properties.file) if log_index?
     end
 
     def resolve_next_file_path
@@ -128,7 +139,7 @@ Syskit.extend_model Syskit::RockLogger do
     def log_index?
         return @log_index unless @log_index.nil?
 
-        @log_index = Roby.app.respond_to?(:syskit_register_new_log)
+        @log_index = @app.respond_to?(:syskit_register_new_log)
     end
 
     def rotate_log
@@ -139,8 +150,8 @@ Syskit.extend_model Syskit::RockLogger do
 
         if log_index?
             time = Time.now
-            Roby.app.syskit_register_finished_log(time, previous_file)
-            Roby.app.syskit_register_new_log(time, path, log_index_stream_description)
+            @app.syskit_register_finished_log(time, previous_file)
+            @app.syskit_register_new_log(time, path, log_index_stream_description)
         end
 
         [previous_file]
